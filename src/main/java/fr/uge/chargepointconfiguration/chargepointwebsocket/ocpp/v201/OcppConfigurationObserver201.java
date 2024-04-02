@@ -1,4 +1,4 @@
-package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2;
+package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201;
 
 import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.RegistrationStatusEnum.ACCEPTED;
 import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.RegistrationStatusEnum.REJECTED;
@@ -14,13 +14,10 @@ import fr.uge.chargepointconfiguration.chargepointwebsocket.WebSocketRequestMess
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.MessageType;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessage;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppObserver;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.BootNotificationRequest;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.BootNotificationResponse.BootNotificationResponseBuilder;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.Component.ComponentBuilder;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.SetVariableData;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.SetVariableData.SetVariableDataBuilder;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.SetVariablesRequest.SetVariablesRequestBuilder;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.SetVariablesResponse;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.Variable.VariableBuilder;
 import fr.uge.chargepointconfiguration.tools.JsonParser;
 import java.io.IOException;
@@ -35,7 +32,7 @@ import java.util.Queue;
 /**
  * Defines the OCPP configuration message for the visitor.
  */
-public class OcppConfigurationObserver20 implements OcppObserver {
+public class OcppConfigurationObserver201 implements OcppObserver {
   private final OcppMessageSender sender;
   private final ChargePointManager chargePointManager;
   private final ChargepointRepository chargepointRepository;
@@ -47,7 +44,7 @@ public class OcppConfigurationObserver20 implements OcppObserver {
    * @param sender                websocket channel to send message
    * @param chargepointRepository charge point repository
    */
-  public OcppConfigurationObserver20(
+  public OcppConfigurationObserver201(
       OcppMessageSender sender,
       ChargePointManager chargePointManager,
       ChargepointRepository chargepointRepository) {

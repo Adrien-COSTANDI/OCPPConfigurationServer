@@ -8,7 +8,7 @@ import java.util.Optional;
  */
 public enum OcppVersion {
   V1_6,
-  V2;
+  V2_0_1;
 
   /**
    * Returns the correct version according to the given string.<br>
@@ -21,7 +21,7 @@ public enum OcppVersion {
     Objects.requireNonNull(version);
     return switch (version) {
       case "ocpp1.6" -> Optional.of(V1_6);
-      case "ocpp2.0.1" -> Optional.of(V2);
+      case "ocpp2.0.1" -> Optional.of(V2_0_1);
       default -> Optional.empty();
     };
   }

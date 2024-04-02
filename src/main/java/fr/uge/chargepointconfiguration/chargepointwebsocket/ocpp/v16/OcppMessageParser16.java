@@ -1,13 +1,8 @@
-package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16;
+package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16;
 
 import fr.uge.chargepointconfiguration.chargepointwebsocket.WebSocketMessage;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessage;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessageParser;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.BootNotification;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.ChangeConfigurationResponse;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.FirmwareStatusNotification;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.ResetResponse;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.UpdateFirmwareResponse;
 import fr.uge.chargepointconfiguration.tools.JsonParser;
 import java.util.Objects;
 import java.util.Optional;

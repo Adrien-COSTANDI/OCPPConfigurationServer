@@ -1,4 +1,4 @@
-package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16;
+package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

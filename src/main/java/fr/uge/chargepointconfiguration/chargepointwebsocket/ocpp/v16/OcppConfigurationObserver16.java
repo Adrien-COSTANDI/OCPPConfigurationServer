@@ -1,4 +1,4 @@
-package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16;
+package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16;
 
 import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.Reset.Type.HARD;
 
@@ -10,15 +10,9 @@ import fr.uge.chargepointconfiguration.chargepointwebsocket.ChargePointManager;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.OcppMessageSender;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessage;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppObserver;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.BootNotification;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.BootNotificationResponse;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.BootNotificationResponse.BootNotificationResponseBuilder;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.ChangeConfiguration;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.ChangeConfiguration.ChangeConfigurationBuilder;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.ChangeConfigurationResponse;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.FirmwareStatusNotification;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.Reset.ResetBuilder;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.ResetResponse;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.UpdateFirmware.UpdateFirmwareBuilder;
 import fr.uge.chargepointconfiguration.configuration.ConfigurationTranscriptor;
 import fr.uge.chargepointconfiguration.firmware.FirmwareRepository;

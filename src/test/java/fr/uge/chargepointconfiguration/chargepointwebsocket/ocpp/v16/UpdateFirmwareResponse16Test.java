@@ -1,8 +1,7 @@
-package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16;
+package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.UpdateFirmwareResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
