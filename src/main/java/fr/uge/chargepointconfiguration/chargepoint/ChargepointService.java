@@ -142,7 +142,7 @@ public class ChargepointService {
     if (existingByConstructorAndSerialNumber != null
         && id != existingByConstructorAndSerialNumber.getId()
         && existingByConstructorAndSerialNumber
-            .getSerialNumberChargepoint()
+            .getSerialNumberChargePoint()
             .equals(newValues.serialNumberChargepoint())
         && existingByConstructorAndSerialNumber.getConstructor().equals(newValues.constructor())) {
       throw new EntityAlreadyExistingException(
@@ -151,7 +151,7 @@ public class ChargepointService {
               + newValues.constructor());
     }
 
-    chargepoint.setSerialNumberChargepoint(newValues.serialNumberChargepoint());
+    chargepoint.setSerialNumberChargePoint(newValues.serialNumberChargepoint());
     chargepoint.setClientId(newValues.clientId());
     chargepoint.setConstructor(newValues.constructor());
     chargepoint.setType(newValues.type());

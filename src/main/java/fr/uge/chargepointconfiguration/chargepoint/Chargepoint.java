@@ -58,7 +58,7 @@ public class Chargepoint {
   private int id;
 
   @Column(name = "serial_number_chargepoint", nullable = false, length = 45)
-  private String serialNumberChargepoint;
+  private String serialNumberChargePoint;
 
   @Column(name = "type", nullable = false, length = 45)
   private String type;
@@ -77,7 +77,7 @@ public class Chargepoint {
   private LocalDateTime lastUpdate = LocalDateTime.now();
 
   @Column(name = "error", nullable = false, length = 65_535)
-  private String error = "";
+  private String error;
 
   @Column(name = "state", nullable = false, columnDefinition = "boolean default false")
   private boolean state = false;
@@ -100,7 +100,7 @@ public class Chargepoint {
   /**
    * {@link Chargepoint}'s constructor.
    *
-   * @param serialNumberChargepoint The chargepoint's serial number.
+   * @param serialNumberChargePoint The chargepoint's serial number.
    * @param type                    The chargepoint's model (commercial name).
    * @param constructor             The chargepoint's constructor.
    * @param clientId                The client's name.
@@ -112,7 +112,7 @@ public class Chargepoint {
    * @param status           {@link StatusProcess}.
    */
   public Chargepoint(
-      String serialNumberChargepoint,
+      String serialNumberChargePoint,
       String type,
       String constructor,
       String clientId,
@@ -122,40 +122,45 @@ public class Chargepoint {
       boolean state,
       Step step,
       StatusProcess status) {
-    this.serialNumberChargepoint = Objects.requireNonNull(serialNumberChargepoint);
-    this.type = Objects.requireNonNull(type);
-    this.constructor = Objects.requireNonNull(constructor);
-    this.clientId = Objects.requireNonNull(clientId);
+    this(serialNumberChargePoint, type, constructor, clientId, configuration, error);
     this.lastUpdate = Objects.requireNonNull(lastUpdate);
-    this.error = Objects.requireNonNull(error);
     this.state = state;
     this.step = Objects.requireNonNull(step);
     this.status = Objects.requireNonNull(status);
-    this.configuration = Objects.requireNonNull(configuration);
+  }
+
+  private Chargepoint(
+      String serialNumberChargePoint,
+      String type,
+      String constructor,
+      String clientId,
+      Configuration configuration,
+      String error) {
+    this.serialNumberChargePoint = Objects.requireNonNull(serialNumberChargePoint);
+    this.type = Objects.requireNonNull(type);
+    this.constructor = Objects.requireNonNull(constructor);
+    this.clientId = Objects.requireNonNull(clientId);
+    this.configuration = configuration;
+    this.error = Objects.requireNonNull(error);
   }
 
   /**
    * {@link Chargepoint}'s shorter constructor.<br>
    * The default parameters are not required here.
    *
-   * @param serialNumberChargepoint The chargepoint's serial number.
+   * @param serialNumberChargePoint The chargepoint's serial number.
    * @param type                    The chargepoint's model (commercial name).
    * @param constructor             The chargepoint's constructor.
    * @param clientId                The client's name.
    * @param configuration           {@link Configuration}.
    */
   public Chargepoint(
-      String serialNumberChargepoint,
+      String serialNumberChargePoint,
       String type,
       String constructor,
       String clientId,
       Configuration configuration) {
-    this.serialNumberChargepoint = Objects.requireNonNull(serialNumberChargepoint);
-    this.type = Objects.requireNonNull(type);
-    this.constructor = Objects.requireNonNull(constructor);
-    this.clientId = Objects.requireNonNull(clientId);
-    this.error = Objects.requireNonNull(error);
-    this.configuration = configuration;
+    this(serialNumberChargePoint, type, constructor, clientId, configuration, "");
   }
 
   /**
@@ -167,12 +172,12 @@ public class Chargepoint {
     return id;
   }
 
-  public String getSerialNumberChargepoint() {
-    return serialNumberChargepoint;
+  public String getSerialNumberChargePoint() {
+    return serialNumberChargePoint;
   }
 
-  public void setSerialNumberChargepoint(String serialNumberChargepoint) {
-    this.serialNumberChargepoint = serialNumberChargepoint;
+  public void setSerialNumberChargePoint(String serialNumberChargePoint) {
+    this.serialNumberChargePoint = serialNumberChargePoint;
   }
 
   public String getType() {
@@ -266,7 +271,7 @@ public class Chargepoint {
     Chargepoint that = (Chargepoint) o;
     return id == that.id
         && state == that.state
-        && Objects.equals(serialNumberChargepoint, that.serialNumberChargepoint)
+        && Objects.equals(serialNumberChargePoint, that.serialNumberChargePoint)
         && Objects.equals(type, that.type)
         && Objects.equals(constructor, that.constructor)
         && Objects.equals(clientId, that.clientId)
@@ -281,7 +286,7 @@ public class Chargepoint {
   public int hashCode() {
     return Objects.hash(
         id,
-        serialNumberChargepoint,
+        serialNumberChargePoint,
         type,
         constructor,
         clientId,
@@ -297,7 +302,7 @@ public class Chargepoint {
   public String toString() {
     return "Chargepoint{"
         + "id=" + id
-        + ", serialNumberChargepoint='" + serialNumberChargepoint + '\''
+        + ", serialNumberChargePoint='" + serialNumberChargePoint + '\''
         + ", type='" + type + '\''
         + ", constructor='" + constructor + '\''
         + ", clientId='" + clientId + '\''
@@ -314,7 +319,7 @@ public class Chargepoint {
     var statusDto = new StatusDto(Timestamp.valueOf(lastUpdate), error, state, step, status);
     return new ChargepointDto(
         id,
-        serialNumberChargepoint,
+        serialNumberChargePoint,
         type,
         constructor,
         clientId,

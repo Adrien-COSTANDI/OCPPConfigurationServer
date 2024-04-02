@@ -150,13 +150,13 @@ public class Configuration {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    var configuration = (Configuration) o;
-    return id == configuration.id
-        && Objects.equals(name, configuration.name)
-        && Objects.equals(description, configuration.description)
-        && Objects.equals(lastEdit, lastEdit)
-        && Objects.equals(this.configuration, configuration.configuration)
-        && Objects.equals(firmware, configuration.firmware);
+    var other = (Configuration) o;
+    return id == other.id
+        && Objects.equals(name, other.name)
+        && Objects.equals(description, other.description)
+        && Objects.equals(lastEdit, other.lastEdit)
+        && Objects.equals(configuration, other.configuration)
+        && Objects.equals(firmware, other.firmware);
   }
 
   @Override

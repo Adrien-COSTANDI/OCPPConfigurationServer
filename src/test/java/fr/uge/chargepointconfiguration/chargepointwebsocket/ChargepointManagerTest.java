@@ -107,8 +107,8 @@ public class ChargepointManagerTest {
     assertEquals(currentChargepoint.getStep(), actualChargepoint.getStep());
     assertEquals(currentChargepoint.isState(), actualChargepoint.isState());
     assertEquals(
-        currentChargepoint.getSerialNumberChargepoint(),
-        actualChargepoint.getSerialNumberChargepoint());
+        currentChargepoint.getSerialNumberChargePoint(),
+        actualChargepoint.getSerialNumberChargePoint());
     assertEquals(currentChargepoint.getType(), actualChargepoint.getType());
     assertEquals(currentChargepoint.getClientId(), actualChargepoint.getClientId());
     assertEquals(currentChargepoint.getStatus(), actualChargepoint.getStatus());
@@ -128,8 +128,8 @@ public class ChargepointManagerTest {
     assertEquals(currentChargepoint.getStep(), actualChargepoint.getStep());
     assertEquals(currentChargepoint.isState(), actualChargepoint.isState());
     assertEquals(
-        currentChargepoint.getSerialNumberChargepoint(),
-        actualChargepoint.getSerialNumberChargepoint());
+        currentChargepoint.getSerialNumberChargePoint(),
+        actualChargepoint.getSerialNumberChargePoint());
     assertEquals(currentChargepoint.getType(), actualChargepoint.getType());
     assertEquals(currentChargepoint.getClientId(), actualChargepoint.getClientId());
     assertEquals(currentChargepoint.getStatus(), actualChargepoint.getStatus());

@@ -7,7 +7,7 @@ import fr.uge.chargepointconfiguration.status.StatusDto;
  * DTO to read chargepoint in database.
  *
  * @param id Database id of the chargepoint stored.
- * @param serialNumberChargepoint The chargepoint's unique serial id.
+ * @param serialNumberChargePoint The chargepoint's unique serial id.
  * @param type The commercial name of the chargepoint.
  * @param constructor The chargepoint's manufacturer.
  * @param clientId The client's name of the chargepoint.
@@ -16,7 +16,7 @@ import fr.uge.chargepointconfiguration.status.StatusDto;
  */
 public record ChargepointDto(
     int id,
-    String serialNumberChargepoint,
+    String serialNumberChargePoint,
     String type,
     String constructor,
     String clientId,

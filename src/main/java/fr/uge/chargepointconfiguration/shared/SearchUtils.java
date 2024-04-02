@@ -87,7 +87,7 @@ public class SearchUtils {
   private static <T> void checkFieldsInEntity(Class<T> clazz, ArrayList<SearchCriteria> params) {
     params.stream().map(SearchCriteria::key).forEach(field -> {
       try {
-        clazz.getDeclaredField(field);
+        var ignore = clazz.getDeclaredField(field);
       } catch (NoSuchFieldException e) {
         throw new IllegalArgumentException(
             "Field %s not found in class %s.".formatted(field, clazz.getName()), e);
