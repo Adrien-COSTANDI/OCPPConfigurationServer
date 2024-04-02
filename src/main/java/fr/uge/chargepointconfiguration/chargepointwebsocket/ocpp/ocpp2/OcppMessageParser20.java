@@ -3,6 +3,8 @@ package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.WebSocketMessage;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessage;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessageParser;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.BootNotificationRequest;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.SetVariablesResponse;
 import fr.uge.chargepointconfiguration.tools.JsonParser;
 import java.util.Objects;
 import java.util.Optional;
@@ -17,7 +19,7 @@ public class OcppMessageParser20 implements OcppMessageParser {
     Objects.requireNonNull(webSocketMessage);
     return switch (webSocketMessage.messageName()) {
       case BOOT_NOTIFICATION_REQUEST -> Optional.of(
-          JsonParser.stringToObject(BootNotificationRequest20.class, webSocketMessage.data()));
+          JsonParser.stringToObject(BootNotificationRequest.class, webSocketMessage.data()));
       default -> Optional.empty();
     };
   }
@@ -29,7 +31,7 @@ public class OcppMessageParser20 implements OcppMessageParser {
     Objects.requireNonNull(responseMessage);
     return switch (requestMessage.messageName()) {
       case SET_VARIABLES_REQUEST -> Optional.of(
-          JsonParser.stringToObject(SetVariablesResponse20.class, responseMessage.data()));
+          JsonParser.stringToObject(SetVariablesResponse.class, responseMessage.data()));
       default -> Optional.empty();
     };
   }

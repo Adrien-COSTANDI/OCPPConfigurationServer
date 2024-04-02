@@ -1,5 +1,8 @@
 package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2;
 
+import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.RegistrationStatusEnum.ACCEPTED;
+import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.RegistrationStatusEnum.REJECTED;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.uge.chargepointconfiguration.chargepoint.Chargepoint;
@@ -11,10 +14,14 @@ import fr.uge.chargepointconfiguration.chargepointwebsocket.WebSocketRequestMess
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.MessageType;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessage;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppObserver;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2.data.Component;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2.data.RegistrationStatus;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2.data.SetVariableData;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2.data.VariableType;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.BootNotificationRequest;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.BootNotificationResponse.BootNotificationResponseBuilder;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.Component.ComponentBuilder;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.SetVariableData;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.SetVariableData.SetVariableDataBuilder;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.SetVariablesRequest.SetVariablesRequestBuilder;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.SetVariablesResponse;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.Variable.VariableBuilder;
 import fr.uge.chargepointconfiguration.tools.JsonParser;
 import java.io.IOException;
 import java.time.Instant;
@@ -52,8 +59,8 @@ public class OcppConfigurationObserver20 implements OcppObserver {
   @Override
   public Optional<OcppMessage> onMessage(OcppMessage ocppMessage) throws IOException {
     switch (ocppMessage) {
-      case BootNotificationRequest20 b -> processBootNotification(b);
-      case SetVariablesResponse20 r -> processConfigurationResponse(r);
+      case BootNotificationRequest b -> processBootNotification(b);
+      case SetVariablesResponse r -> processConfigurationResponse(r);
       default -> {
         // Do nothing
       }
@@ -67,18 +74,22 @@ public class OcppConfigurationObserver20 implements OcppObserver {
   @Override
   public void onDisconnection(ChargePointManager chargePointManager) {}
 
-  private void processBootNotification(BootNotificationRequest20 bootNotificationRequest)
+  private void processBootNotification(BootNotificationRequest bootNotificationRequest)
       throws IOException {
 
     // Get charge point from database
     chargePointManager.setCurrentChargepoint(
         chargepointRepository.findBySerialNumberChargepointAndConstructor(
-            bootNotificationRequest.chargingStation().serialNumber(),
-            bootNotificationRequest.chargingStation().vendorName()));
+            bootNotificationRequest.getChargingStation().getSerialNumber(),
+            bootNotificationRequest.getChargingStation().getVendorName()));
     var currentChargepoint = chargePointManager.getCurrentChargepoint();
     // If charge point is not found then skip it
     if (currentChargepoint == null) {
-      var response = new BootNotificationResponse20(Instant.now(), 5, RegistrationStatus.Rejected);
+      var response = new BootNotificationResponseBuilder()
+          .withCurrentTime(Instant.now())
+          .withInterval(5)
+          .withStatus(REJECTED)
+          .build();
       sender.sendMessage(response, chargePointManager);
       return;
     }
@@ -88,7 +99,11 @@ public class OcppConfigurationObserver20 implements OcppObserver {
     // Dispatch information to users
     chargePointManager.notifyStatusUpdate();
     // Send BootNotification Response
-    var response = new BootNotificationResponse20(Instant.now(), 5, RegistrationStatus.Accepted);
+    var response = new BootNotificationResponseBuilder()
+        .withCurrentTime(Instant.now())
+        .withInterval(5)
+        .withStatus(ACCEPTED)
+        .build();
     sender.sendMessage(response, chargePointManager);
     if (currentChargepoint.getConfiguration() == null) {
       currentChargepoint.setStatus(Chargepoint.StatusProcess.FINISHED);
@@ -96,8 +111,13 @@ public class OcppConfigurationObserver20 implements OcppObserver {
       chargePointManager.notifyStatusUpdate();
       return;
     }
-    var config = new SetVariablesRequest20(List.of(
-        new SetVariableData("", new Component("none"), new VariableType("LightIntensity"))));
+    var config = new SetVariablesRequestBuilder()
+        .withSetVariableData(List.of(new SetVariableDataBuilder()
+            .withAttributeValue("")
+            .withComponent(new ComponentBuilder().withName("none").build())
+            .withVariable(new VariableBuilder().withName("LightIntensity").build())
+            .build()))
+        .build();
     sender.sendMessage(config, chargePointManager);
     switch (currentChargepoint.getStep()) {
       case Chargepoint.Step.CONFIGURATION -> processConfigurationRequest();
@@ -129,7 +149,11 @@ public class OcppConfigurationObserver20 implements OcppObserver {
       var componentConfig = configMap.get(component);
       for (var key : componentConfig.keySet()) {
         var value = componentConfig.get(key);
-        queue.add(new SetVariableData(value, new Component(component), new VariableType(key)));
+        queue.add(new SetVariableDataBuilder()
+            .withAttributeValue(value)
+            .withComponent(new ComponentBuilder().withName(component).build())
+            .withVariable(new VariableBuilder().withName(key).build())
+            .build());
       }
     }
     if (queue.isEmpty()) {
@@ -143,11 +167,13 @@ public class OcppConfigurationObserver20 implements OcppObserver {
       chargepointRepository.save(currentChargepoint);
       // Dispatch information to users
       chargePointManager.notifyStatusUpdate();
-      var setVariableList = new ArrayList<SetVariableData>();
+      var setVariableData = new ArrayList<
+          fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.SetVariableData>();
       while (!queue.isEmpty()) {
-        setVariableList.add(queue.poll());
+        setVariableData.add(queue.poll());
       }
-      var setVariableRequest = new SetVariablesRequest20(setVariableList);
+      var setVariableRequest =
+          new SetVariablesRequestBuilder().withSetVariableData(setVariableData).build();
       sender.sendMessage(setVariableRequest, chargePointManager);
       chargePointManager.setPendingRequest(new WebSocketRequestMessage(
           MessageType.REQUEST.getCallType(),
@@ -172,18 +198,18 @@ public class OcppConfigurationObserver20 implements OcppObserver {
     processConfigurationRequest();
   }
 
-  private void processConfigurationResponse(SetVariablesResponse20 response) {
+  private void processConfigurationResponse(SetVariablesResponse response) {
     var noFailure = true;
     var failedConfig = new StringBuilder();
-    for (var result : response.setVariableResult()) {
-      if (!result.attributeStatus().equals("Accepted")) {
+    for (var result : response.getSetVariableResult()) {
+      if (!result.getAttributeStatus().equals(ACCEPTED)) {
         noFailure = false;
         failedConfig
-            .append(result.attributeStatus())
+            .append(result.getAttributeStatus())
             .append(" :\n\tComponent : ")
-            .append(result.component().name())
+            .append(result.getComponent().getName())
             .append("\n\tVariable : ")
-            .append(result.variable().name())
+            .append(result.getVariable().getName())
             .append("\n");
       }
     }

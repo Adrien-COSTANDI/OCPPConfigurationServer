@@ -2,13 +2,13 @@ package fr.uge.chargepointconfiguration.chargepointwebsocket;
 
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.MessageType;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessage;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2.BootNotificationRequest20;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2.SetVariablesRequest20;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.BootNotification;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.ChangeConfiguration;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.FirmwareStatusNotification;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.Reset;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.UpdateFirmware;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.BootNotificationRequest;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.SetVariablesRequest;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -98,10 +98,10 @@ public interface WebSocketMessage {
       Objects.requireNonNull(ocppMessage);
       return switch (ocppMessage) {
         case BootNotification ignored -> BOOT_NOTIFICATION_REQUEST;
-        case BootNotificationRequest20 ignored -> BOOT_NOTIFICATION_REQUEST;
+        case BootNotificationRequest ignored -> BOOT_NOTIFICATION_REQUEST;
         case ChangeConfiguration ignored -> CHANGE_CONFIGURATION_REQUEST;
         case UpdateFirmware ignored -> UPDATE_FIRMWARE_REQUEST;
-        case SetVariablesRequest20 ignored -> SET_VARIABLES_REQUEST;
+        case SetVariablesRequest ignored -> SET_VARIABLES_REQUEST;
         case Reset ignored -> RESET_REQUEST;
         case FirmwareStatusNotification ignored -> STATUS_FIRMWARE_REQUEST;
         default -> OTHER;

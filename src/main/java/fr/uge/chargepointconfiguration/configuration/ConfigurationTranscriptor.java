@@ -1,6 +1,5 @@
 package fr.uge.chargepointconfiguration.configuration;
 
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2.data.Component;
 import fr.uge.chargepointconfiguration.firmware.FirmwareKey;
 import java.util.Objects;
 
@@ -14,18 +13,18 @@ public enum ConfigurationTranscriptor {
       "Intensité de la LED",
       FirmwareKey.LIGHT_INTENSITY,
       "UNKNOWN",
-      new Component("UNKNOWN"),
+      "UNKNOWN",
       "^(100|\\d{1,2})$"),
 
   NETWORK_PROFILE(
-      2, "Adresse du prochain serveur", FirmwareKey.NETWORK_PROFILE, "", new Component(""), ""),
+      2, "Adresse du prochain serveur", FirmwareKey.NETWORK_PROFILE, "", "", ""),
 
   CHARGEPOINT_IDENTITY(
       3,
       "Nom de la borne",
       FirmwareKey.CHARGEPOINT_IDENTITY,
       "Identity",
-      new Component("SecurityCtrlr"),
+      "SecurityCtrlr",
       "^.{0,20}$"),
 
   LOCAL_AUTH_LIST(
@@ -33,25 +32,25 @@ public enum ConfigurationTranscriptor {
       "Activer la liste des badges d'authentification ?",
       FirmwareKey.LOCAL_AUTH_LIST,
       "LocalAuthListEnabled",
-      new Component("LocalAuthListCtrlr"),
+      "LocalAuthListCtrlr",
       ""),
 
   STATION_MAX_CURRENT(
-      5, "Courant max de la borne", FirmwareKey.STATION_MAX_CURRENT, "", new Component(""), ""),
+      5, "Courant max de la borne", FirmwareKey.STATION_MAX_CURRENT, "", "", ""),
 
   STATION_PASSWORD(
       6,
       "Changer le mot de passe de la borne",
       FirmwareKey.STATION_PASSWORD,
       "BasicAuthPassword",
-      new Component("SecurityCtrlr"),
+      "SecurityCtrlr",
       "^(?!.*[\\\\\",]).{10,40}$");
 
   private final int id;
   private final String fullName;
   private final FirmwareKey ocpp16Key;
   private final String ocpp20Key;
-  private final Component component;
+  private final String componentName;
   private final String regexRule;
 
   /**
@@ -60,7 +59,7 @@ public enum ConfigurationTranscriptor {
    * @param fullName The name which will be displayed to the user, it should be unique.
    * @param ocpp16Key The configuration key according to the OCPP 1.6 protocol.
    * @param ocpp20Key The configuration key according to the OCPP 2.0.1 protocol.
-   * @param component {@link Component}.
+   * @param componentName The component name according to the OCPP 2.0.1 protocol.
    * @param regexRule The rule which a user should respect when giving a value to the given key.
    */
   ConfigurationTranscriptor(
@@ -68,13 +67,13 @@ public enum ConfigurationTranscriptor {
       String fullName,
       FirmwareKey ocpp16Key,
       String ocpp20Key,
-      Component component,
+      String componentName,
       String regexRule) {
     this.id = id;
     this.fullName = Objects.requireNonNull(fullName);
     this.ocpp16Key = Objects.requireNonNull(ocpp16Key);
     this.ocpp20Key = Objects.requireNonNull(ocpp20Key);
-    this.component = Objects.requireNonNull(component);
+    this.componentName = Objects.requireNonNull(componentName);
     this.regexRule = Objects.requireNonNull(regexRule);
   }
 
@@ -117,12 +116,12 @@ public enum ConfigurationTranscriptor {
   }
 
   /**
-   * Returns the configuration's {@link Component}.
+   * Returns the configuration's component name.
    *
-   * @return {@link Component}.
+   * @return The component name.
    */
-  public Component getComponent() {
-    return component;
+  public String getComponentName() {
+    return componentName;
   }
 
   /**
