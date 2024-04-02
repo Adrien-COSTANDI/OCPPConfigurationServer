@@ -16,8 +16,7 @@ public enum ConfigurationTranscriptor {
       "UNKNOWN",
       "^(100|\\d{1,2})$"),
 
-  NETWORK_PROFILE(
-      2, "Adresse du prochain serveur", FirmwareKey.NETWORK_PROFILE, "", "", ""),
+  NETWORK_PROFILE(2, "Adresse du prochain serveur", FirmwareKey.NETWORK_PROFILE, "", "", ""),
 
   CHARGEPOINT_IDENTITY(
       3,
@@ -35,8 +34,7 @@ public enum ConfigurationTranscriptor {
       "LocalAuthListCtrlr",
       ""),
 
-  STATION_MAX_CURRENT(
-      5, "Courant max de la borne", FirmwareKey.STATION_MAX_CURRENT, "", "", ""),
+  STATION_MAX_CURRENT(5, "Courant max de la borne", FirmwareKey.STATION_MAX_CURRENT, "", "", ""),
 
   STATION_PASSWORD(
       6,

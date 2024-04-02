@@ -12,14 +12,20 @@ import java.util.Optional;
  */
 public class OcppMessageParser16 implements OcppMessageParser {
 
+  private final JsonParser jsonParser;
+
+  public OcppMessageParser16() {
+    jsonParser = new JsonParser();
+  }
+
   @Override
   public Optional<OcppMessage> parseRequestMessage(WebSocketMessage webSocketMessage) {
     Objects.requireNonNull(webSocketMessage);
     return switch (webSocketMessage.messageName()) {
       case BOOT_NOTIFICATION_REQUEST -> Optional.of(
-          JsonParser.stringToObject(BootNotification.class, webSocketMessage.data()));
+          jsonParser.stringToObject(BootNotification.class, webSocketMessage.data()));
       case STATUS_FIRMWARE_REQUEST -> Optional.of(
-          JsonParser.stringToObject(FirmwareStatusNotification.class, webSocketMessage.data()));
+          jsonParser.stringToObject(FirmwareStatusNotification.class, webSocketMessage.data()));
       default -> Optional.empty();
     };
   }
@@ -31,10 +37,10 @@ public class OcppMessageParser16 implements OcppMessageParser {
     Objects.requireNonNull(responseMessage);
     return switch (requestMessage.messageName()) {
       case CHANGE_CONFIGURATION_REQUEST -> Optional.of(
-          JsonParser.stringToObject(ChangeConfigurationResponse.class, responseMessage.data()));
+          jsonParser.stringToObject(ChangeConfigurationResponse.class, responseMessage.data()));
       case RESET_REQUEST -> Optional.of(
-          JsonParser.stringToObject(ResetResponse.class, responseMessage.data()));
-      case UPDATE_FIRMWARE_REQUEST -> Optional.of(JsonParser.stringToObject(
+          jsonParser.stringToObject(ResetResponse.class, responseMessage.data()));
+      case UPDATE_FIRMWARE_REQUEST -> Optional.of(jsonParser.stringToObject(
           UpdateFirmwareResponse.class, "{}")); // Empty value because it is an acknowledgement
       default -> Optional.empty();
     };
@@ -43,6 +49,6 @@ public class OcppMessageParser16 implements OcppMessageParser {
   @Override
   public String transform(OcppMessage message) {
     Objects.requireNonNull(message);
-    return JsonParser.objectToJsonString(message);
+    return jsonParser.objectToJsonString(message);
   }
 }

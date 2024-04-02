@@ -25,12 +25,10 @@ import org.springframework.stereotype.Service;
 public class ConfigurationService {
 
   private final ConfigurationRepository configurationRepository;
-
   private final FirmwareRepository firmwareRepository;
-
   private final UserService userService;
-
   private final CustomLogger logger;
+  private final JsonParser jsonParser;
 
   record ConfigurationJson(
       @JsonProperty("1") String lightIntensity,
@@ -54,6 +52,7 @@ public class ConfigurationService {
     this.firmwareRepository = firmwareRepository;
     this.userService = userService;
     this.logger = logger;
+    this.jsonParser = new JsonParser();
   }
 
   /**
@@ -87,9 +86,9 @@ public class ConfigurationService {
     return configuration.toDto();
   }
 
-  private static void checkerConfig(CreateConfigurationDto createConfigurationDto) {
+  private void checkerConfig(CreateConfigurationDto createConfigurationDto) {
     var confJson =
-        JsonParser.stringToObject(ConfigurationJson.class, createConfigurationDto.configuration());
+        jsonParser.stringToObject(ConfigurationJson.class, createConfigurationDto.configuration());
 
     var transcriptorsById = Arrays.stream(ConfigurationTranscriptor.values())
         .collect(Collectors.toMap(ConfigurationTranscriptor::getId, e -> e));

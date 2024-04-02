@@ -13,6 +13,12 @@ public class JsonParser {
 
   public static final String OCPP_RFC3339_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 
+  private static final ObjectMapper mapper = new ObjectMapper()
+      .registerModule(new JavaTimeModule())
+      .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+  public JsonParser() {}
+
   /**
    * Transform object to formatted JSON string.
    *
@@ -22,9 +28,6 @@ public class JsonParser {
    */
   public static <T> String objectToJsonString(T object) {
     Objects.requireNonNull(object);
-    var mapper = new ObjectMapper()
-        .registerModule(new JavaTimeModule())
-        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     try {
       return mapper.writeValueAsString(object);
     } catch (JsonProcessingException e) {
@@ -41,10 +44,9 @@ public class JsonParser {
    * @param <T>     type of the object generated
    * @return a new instance of object
    */
-  public static <T> T stringToObject(Class<T> type, String content) {
+  public <T> T stringToObject(Class<T> type, String content) {
     Objects.requireNonNull(type);
     Objects.requireNonNull(content);
-    var mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     try {
       return mapper.readValue(content, type);
     } catch (JsonProcessingException e) {

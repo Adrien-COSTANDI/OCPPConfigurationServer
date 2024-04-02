@@ -12,12 +12,18 @@ import java.util.Optional;
  */
 public class OcppMessageParser201 implements OcppMessageParser {
 
+  private final JsonParser jsonParser;
+
+  public OcppMessageParser201() {
+    jsonParser = new JsonParser();
+  }
+
   @Override
   public Optional<OcppMessage> parseRequestMessage(WebSocketMessage webSocketMessage) {
     Objects.requireNonNull(webSocketMessage);
     return switch (webSocketMessage.messageName()) {
       case BOOT_NOTIFICATION_REQUEST -> Optional.of(
-          JsonParser.stringToObject(BootNotificationRequest.class, webSocketMessage.data()));
+          jsonParser.stringToObject(BootNotificationRequest.class, webSocketMessage.data()));
       default -> Optional.empty();
     };
   }
@@ -29,13 +35,13 @@ public class OcppMessageParser201 implements OcppMessageParser {
     Objects.requireNonNull(responseMessage);
     return switch (requestMessage.messageName()) {
       case SET_VARIABLES_REQUEST -> Optional.of(
-          JsonParser.stringToObject(SetVariablesResponse.class, responseMessage.data()));
+          jsonParser.stringToObject(SetVariablesResponse.class, responseMessage.data()));
       default -> Optional.empty();
     };
   }
 
   @Override
   public String transform(OcppMessage message) {
-    return JsonParser.objectToJsonString(message);
+    return jsonParser.objectToJsonString(message);
   }
 }
