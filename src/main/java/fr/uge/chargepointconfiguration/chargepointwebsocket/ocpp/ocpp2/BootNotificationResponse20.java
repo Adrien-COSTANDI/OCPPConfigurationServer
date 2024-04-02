@@ -4,7 +4,7 @@ import static fr.uge.chargepointconfiguration.tools.JsonParser.OCPP_RFC3339_DATE
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessageResponse;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.data.RegistrationStatus;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2.data.RegistrationStatus;
 import java.time.Instant;
 
 /**

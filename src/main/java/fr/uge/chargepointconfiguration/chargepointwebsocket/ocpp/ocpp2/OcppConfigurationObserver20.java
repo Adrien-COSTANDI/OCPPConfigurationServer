@@ -11,8 +11,8 @@ import fr.uge.chargepointconfiguration.chargepointwebsocket.WebSocketRequestMess
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.MessageType;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessage;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppObserver;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.data.RegistrationStatus;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2.data.Component;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2.data.RegistrationStatus;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2.data.SetVariableData;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2.data.VariableType;
 import fr.uge.chargepointconfiguration.tools.JsonParser;

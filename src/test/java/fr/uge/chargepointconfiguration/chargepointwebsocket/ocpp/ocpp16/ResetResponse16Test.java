@@ -1,41 +1,35 @@
 package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16;
 
+import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.ResetResponse.Status.ACCEPTED;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.data.RegistrationStatus;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.ResetResponse;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-/**
- * JUnit test class for the {@link ResetResponse16}.
- */
-class ResetResponse16Test {
+class ResetResponse16Test extends OcppBaseTest {
 
-  /**
-   * Should not throw an exception when instantiating the record.
-   */
+  @DisplayName("Should not throw an exception when instantiating the message")
   @Test
   public void correctConstructorShouldNotThrowException() {
     assertDoesNotThrow(() -> {
-      new ResetResponse16(RegistrationStatus.Accepted);
+      new ResetResponse.ResetResponseBuilder().withStatus(ACCEPTED).build();
     });
   }
 
-  /**
-   * Should return the correct status.
-   */
+  @DisplayName("Should return the correct status")
   @Test
   public void returnsCorrectStatus() {
-    var test = new ResetResponse16(RegistrationStatus.Accepted);
-    assertEquals(RegistrationStatus.Accepted, test.status());
+    var test = new ResetResponse.ResetResponseBuilder().withStatus(ACCEPTED).build();
+    assertIsValid(test);
+    assertEquals(ACCEPTED, test.getStatus());
   }
 
-  /**
-   * Should throw a {@link NullPointerException} if the status is null.
-   */
+  @DisplayName("Should report a violation if the status is null")
   @Test
-  public void throwsExceptionIfStatusIsNull() {
-    assertThrows(NullPointerException.class, () -> new ResetResponse16(null));
+  public void invalidBeanIfStatusIsNull() {
+    var test = new ResetResponse.ResetResponseBuilder().build();
+    assertSingleViolation(test, "status");
   }
 }

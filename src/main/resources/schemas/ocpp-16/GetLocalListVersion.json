@@ -1,0 +1,9 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "id": "urn:OCPP:1.6:2019:12:GetLocalListVersionRequest",
+    "title": "GetLocalListVersionRequest",
+    "javaInterfaces" : ["fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessageRequest"],
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false
+}

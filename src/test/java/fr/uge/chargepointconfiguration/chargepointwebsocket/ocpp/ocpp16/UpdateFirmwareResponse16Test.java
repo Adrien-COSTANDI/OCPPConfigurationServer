@@ -2,20 +2,18 @@ package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.UpdateFirmwareResponse;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-/**
- * JUnit test class for the {@link UpdateFirmwareResponse16}.
- */
-class UpdateFirmwareResponse16Test {
+class UpdateFirmwareResponse16Test extends OcppBaseTest {
 
-  /**
-   * Should not throw an exception when instantiating the record.
-   */
+  @DisplayName("Should not throw an exception when instantiating the message")
   @Test
   public void correctConstructorShouldNotThrowException() {
     assertDoesNotThrow(() -> {
-      new UpdateFirmwareResponse16();
+      new UpdateFirmwareResponse();
     });
+    assertIsValid(new UpdateFirmwareResponse());
   }
 }

@@ -2,13 +2,13 @@ package fr.uge.chargepointconfiguration.chargepointwebsocket;
 
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.MessageType;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessage;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.BootNotificationRequest16;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.ChangeConfigurationRequest16;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.FirmwareStatusNotificationRequest16;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.ResetRequest16;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.UpdateFirmwareRequest16;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2.BootNotificationRequest20;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2.SetVariablesRequest20;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.BootNotification;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.ChangeConfiguration;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.FirmwareStatusNotification;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.Reset;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.UpdateFirmware;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -97,13 +97,13 @@ public interface WebSocketMessage {
     public static MessageTypeRequest ocppMessageToEnum(OcppMessage ocppMessage) {
       Objects.requireNonNull(ocppMessage);
       return switch (ocppMessage) {
-        case BootNotificationRequest16 ignored -> BOOT_NOTIFICATION_REQUEST;
+        case BootNotification ignored -> BOOT_NOTIFICATION_REQUEST;
         case BootNotificationRequest20 ignored -> BOOT_NOTIFICATION_REQUEST;
-        case ChangeConfigurationRequest16 ignored -> CHANGE_CONFIGURATION_REQUEST;
-        case UpdateFirmwareRequest16 ignored -> UPDATE_FIRMWARE_REQUEST;
+        case ChangeConfiguration ignored -> CHANGE_CONFIGURATION_REQUEST;
+        case UpdateFirmware ignored -> UPDATE_FIRMWARE_REQUEST;
         case SetVariablesRequest20 ignored -> SET_VARIABLES_REQUEST;
-        case ResetRequest16 ignored -> RESET_REQUEST;
-        case FirmwareStatusNotificationRequest16 ignored -> STATUS_FIRMWARE_REQUEST;
+        case Reset ignored -> RESET_REQUEST;
+        case FirmwareStatusNotification ignored -> STATUS_FIRMWARE_REQUEST;
         default -> OTHER;
       };
     }

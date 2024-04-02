@@ -2,71 +2,80 @@ package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.data.RegistrationStatus;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.BootNotificationResponse;
 import java.time.Instant;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-/**
- * JUnit test class for {@link BootNotificationResponse16}.
- */
-class BootNotificationResponse16Test {
+class BootNotificationResponse16Test extends OcppBaseTest {
 
-  /**
-   * Should not throw an exception when instantiating the record.
-   */
+  @DisplayName("Should not throw an exception when instantiating the message")
   @Test
   public void correctConstructorShouldNotThrowException() {
     assertDoesNotThrow(() -> {
-      new BootNotificationResponse16(Instant.now(), 1, RegistrationStatus.Accepted);
+      new BootNotificationResponse.BootNotificationResponseBuilder()
+          .withCurrentTime(Instant.now())
+          .withInterval(1)
+          .withStatus(BootNotificationResponse.Status.ACCEPTED)
+          .build();
     });
   }
 
-  /**
-   * Should return the correct current time.
-   */
+  @DisplayName("Should return the correct current time")
   @Test
   public void returnsCorrectTime() {
     var currentTime = Instant.now();
-    var test = new BootNotificationResponse16(currentTime, 1, RegistrationStatus.Accepted);
-    assertEquals(currentTime, test.currentTime());
+    var test = new BootNotificationResponse.BootNotificationResponseBuilder()
+        .withCurrentTime(currentTime)
+        .withInterval(1)
+        .withStatus(BootNotificationResponse.Status.ACCEPTED)
+        .build();
+    assertIsValid(test);
+    assertEquals(currentTime, test.getCurrentTime());
   }
 
-  /**
-   * Should return the correct interval.
-   */
+  @DisplayName("Should return the correct interval")
   @Test
   public void returnsCorrectInterval() {
-    var test = new BootNotificationResponse16(Instant.now(), 1, RegistrationStatus.Accepted);
-    assertEquals(1, test.interval());
+    var test = new BootNotificationResponse.BootNotificationResponseBuilder()
+        .withCurrentTime(Instant.now())
+        .withInterval(1)
+        .withStatus(BootNotificationResponse.Status.ACCEPTED)
+        .build();
+    assertIsValid(test);
+    assertEquals(1, test.getInterval());
   }
 
-  /**
-   * Should return the correct status.
-   */
+  @DisplayName("Should return the correct status")
   @Test
   public void returnsCorrectStatus() {
-    var test = new BootNotificationResponse16(Instant.now(), 1, RegistrationStatus.Accepted);
-    assertEquals(RegistrationStatus.Accepted, test.status());
+    var test = new BootNotificationResponse.BootNotificationResponseBuilder()
+        .withCurrentTime(Instant.now())
+        .withInterval(1)
+        .withStatus(BootNotificationResponse.Status.ACCEPTED)
+        .build();
+    assertIsValid(test);
+    assertEquals(BootNotificationResponse.Status.ACCEPTED, test.getStatus());
   }
 
-  /**
-   * Should throw a {@link NullPointerException} if the time is null.
-   */
+  @DisplayName("Should report violation if the time is null")
   @Test
-  public void throwsExceptionIfTimeIsNull() {
-    assertThrows(
-        NullPointerException.class,
-        () -> new BootNotificationResponse16(null, 1, RegistrationStatus.Accepted));
+  public void invalidBeanIfTimeIsNull() {
+    var test = new BootNotificationResponse.BootNotificationResponseBuilder()
+        .withInterval(1)
+        .withStatus(BootNotificationResponse.Status.ACCEPTED)
+        .build();
+    assertSingleViolation(test, "currentTime");
   }
 
-  /**
-   * Should throw a {@link NullPointerException} if the status is null.
-   */
+  @DisplayName("Should report violation if the status is null")
   @Test
-  public void throwsExceptionIfStatusIsNull() {
-    assertThrows(
-        NullPointerException.class, () -> new BootNotificationResponse16(Instant.now(), 1, null));
+  public void invalidBeanIfStatusIsNull() {
+    var test = new BootNotificationResponse.BootNotificationResponseBuilder()
+        .withCurrentTime(Instant.now())
+        .withInterval(1)
+        .build();
+    assertSingleViolation(test, "status");
   }
 }

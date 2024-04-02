@@ -1,41 +1,35 @@
 package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16;
 
+import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.Reset.Type.HARD;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.data.ResetType;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.Reset.ResetBuilder;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-/**
- * JUnit test class for the {@link ResetRequest16}.
- */
-class ResetRequest16Test {
+class ResetRequest16Test extends OcppBaseTest {
 
-  /**
-   * Should not throw an exception when instantiating the record.
-   */
+  @DisplayName("Should not throw an exception when instantiating the message")
   @Test
   public void correctConstructorShouldNotThrowException() {
     assertDoesNotThrow(() -> {
-      new ResetRequest16(ResetType.Hard);
+      new ResetBuilder().withType(HARD).build();
     });
   }
 
-  /**
-   * Should return the correct type.
-   */
+  @DisplayName("Should return the correct type")
   @Test
   public void returnsCorrectType() {
-    var test = new ResetRequest16(ResetType.Hard);
-    assertEquals(ResetType.Hard, test.type());
+    var test = new ResetBuilder().withType(HARD).build();
+    assertIsValid(test);
+    assertEquals(HARD, test.getType());
   }
 
-  /**
-   * Should throw a {@link NullPointerException} if the type is null.
-   */
+  @DisplayName("Should report a violation if the type is null")
   @Test
-  public void throwsExceptionIfTypeIsNull() {
-    assertThrows(NullPointerException.class, () -> new ResetRequest16(null));
+  public void invalidBeanIfTypeIsNull() {
+    var test = new ResetBuilder().build();
+    assertSingleViolation(test, "type");
   }
 }

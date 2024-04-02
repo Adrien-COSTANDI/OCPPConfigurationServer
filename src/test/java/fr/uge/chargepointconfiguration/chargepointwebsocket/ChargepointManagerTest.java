@@ -1,5 +1,7 @@
 package fr.uge.chargepointconfiguration.chargepointwebsocket;
 
+import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.ChangeConfigurationResponse.Status.ACCEPTED;
+import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.FirmwareStatusNotification.Status.INSTALLED;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -9,22 +11,19 @@ import fr.uge.chargepointconfiguration.chargepoint.ChargepointRepository;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.MessageType;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessage;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppVersion;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.BootNotificationRequest16;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.BootNotificationResponse16;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.ChangeConfigurationRequest16;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.ChangeConfigurationResponse16;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.FirmwareStatusNotificationRequest16;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.ResetRequest16;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.UpdateFirmwareRequest16;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.UpdateFirmwareResponse16;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.data.ConfigurationStatus;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.data.FirmwareStatus;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.data.RegistrationStatus;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16.data.ResetType;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.BootNotification.BootNotificationBuilder;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.BootNotificationResponse;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.ChangeConfiguration;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.ChangeConfigurationResponse.ChangeConfigurationResponseBuilder;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.FirmwareStatusNotification.FirmwareStatusNotificationBuilder;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.Reset;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.UpdateFirmware;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.UpdateFirmwareResponse;
 import fr.uge.chargepointconfiguration.configuration.ConfigurationTranscriptor;
 import fr.uge.chargepointconfiguration.firmware.FirmwareRepository;
 import fr.uge.chargepointconfiguration.logs.CustomLogger;
 import fr.uge.chargepointconfiguration.tools.JsonParser;
+import jakarta.validation.Validator;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -39,6 +38,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class ChargepointManagerTest {
 
   @Autowired
+  private Validator validator;
+
+  @Autowired
   private ChargepointRepository chargepointRepository;
 
   @Autowired
@@ -51,6 +53,10 @@ public class ChargepointManagerTest {
     return new ChargePointManager(
         OcppVersion.V1_6,
         (ocppMessage, chargePointManager) -> {
+          var violations = validator.validate(ocppMessage);
+          if (!violations.isEmpty()) {
+            throw new IllegalArgumentException("Invalid message:" + violations);
+          }
           if (Objects.requireNonNull(OcppMessage.ocppMessageToMessageType(ocppMessage))
               == MessageType.REQUEST) {
             var request = new WebSocketRequestMessage(
@@ -74,7 +80,12 @@ public class ChargepointManagerTest {
     assertDoesNotThrow(() -> {
       new ChargePointManager(
           OcppVersion.V1_6,
-          (ocppMessage, chargePointManager) -> {},
+          (ocppMessage, chargePointManager) -> {
+            var violations = validator.validate(ocppMessage);
+            if (!violations.isEmpty()) {
+              throw new IllegalArgumentException("Invalid message:" + violations);
+            }
+          },
           chargepointRepository,
           firmwareRepository,
           customLogger);
@@ -125,22 +136,27 @@ public class ChargepointManagerTest {
   }
 
   /**
-   * Should send a {@link BootNotificationResponse16} with a rejected status.
+   * Should send a {@link BootNotificationResponse} with a rejected status.
    */
   @Test
   public void onMessageShouldRejectUnknownChargepoint() throws IOException {
     var chargepointManager = instantiate();
-    var bootNotifMessage = new BootNotificationRequest16(
-        "Testor Corp", "A big chargepoint", "ABCDE524154", "Leroy Jenkins", "5.5.5-5555");
+    var bootNotifMessage = new BootNotificationBuilder()
+        .withChargePointVendor("Testor Corp")
+        .withChargePointModel("A big chargepoint")
+        .withChargePointSerialNumber("ABCDE524154")
+        .withChargeBoxSerialNumber("Leroy Jenkins")
+        .withFirmwareVersion("5.5.5-5555")
+        .build();
     var request = new WebSocketRequestMessage(
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(bootNotifMessage),
         JsonParser.objectToJsonString(bootNotifMessage));
     var sentMessage = chargepointManager.processMessage(request);
-    var actualResponse = (BootNotificationResponse16) sentMessage.orElseThrow();
-    assertEquals(BootNotificationResponse16.class, sentMessage.orElseThrow().getClass());
-    assertEquals(RegistrationStatus.Rejected, actualResponse.status());
+    var actualResponse = (BootNotificationResponse) sentMessage.orElseThrow();
+    assertEquals(BootNotificationResponse.class, sentMessage.orElseThrow().getClass());
+    assertEquals(BootNotificationResponse.Status.REJECTED, actualResponse.getStatus());
   }
 
   /**
@@ -149,38 +165,48 @@ public class ChargepointManagerTest {
   @Test
   public void onMessageShouldAcceptChargepointWithoutConfiguration() throws IOException {
     var chargepointManager = instantiate();
-    var bootNotifMessage = new BootNotificationRequest16(
-        "Alfen BV", "Borne to be alive", "ACE0000001", "Leroy Jenkins", "5.5.5-5555");
+    var bootNotifMessage = new BootNotificationBuilder()
+        .withChargePointVendor("Alfen BV")
+        .withChargePointModel("Borne to be alive")
+        .withChargePointSerialNumber("ACE0000001")
+        .withChargeBoxSerialNumber("Leroy Jenkins")
+        .withFirmwareVersion("5.5.5-5555")
+        .build();
     var request = new WebSocketRequestMessage(
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(bootNotifMessage),
         JsonParser.objectToJsonString(bootNotifMessage));
     var sentMessage = chargepointManager.processMessage(request);
-    var actualResponse = (BootNotificationResponse16) sentMessage.orElseThrow();
-    assertEquals(BootNotificationResponse16.class, sentMessage.orElseThrow().getClass());
-    assertEquals(RegistrationStatus.Accepted, actualResponse.status());
+    var actualResponse = (BootNotificationResponse) sentMessage.orElseThrow();
+    assertEquals(BootNotificationResponse.class, sentMessage.orElseThrow().getClass());
+    assertEquals(BootNotificationResponse.Status.ACCEPTED, actualResponse.getStatus());
   }
 
   /**
-   * In this test, the chargepoint should have {@link UpdateFirmwareRequest16} sent
+   * In this test, the chargepoint should have {@link UpdateFirmware} sent
    * until it is done.
    */
   @Test
   public void onMessageShouldSendAUpdateFirmwareRequestUntilIsDone() throws IOException {
     var chargepointManager = instantiate();
-    var bootNotifMessage = new BootNotificationRequest16(
-        "Alfen BV", "Borne to be alive", "ACE0000005", "Leroy Jenkins", "5.5.5-5555");
+    var bootNotifMessage = new BootNotificationBuilder()
+        .withChargePointVendor("Alfen BV")
+        .withChargePointModel("Borne to be alive")
+        .withChargePointSerialNumber("ACE0000005")
+        .withChargeBoxSerialNumber("Leroy Jenkins")
+        .withFirmwareVersion("5.5.5-5555")
+        .build();
     var request = new WebSocketRequestMessage(
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(bootNotifMessage),
         JsonParser.objectToJsonString(bootNotifMessage));
     var sentMessage = chargepointManager.processMessage(request);
-    var actualResponse = (UpdateFirmwareRequest16) sentMessage.orElseThrow();
-    assertEquals(UpdateFirmwareRequest16.class, actualResponse.getClass());
-    assertEquals("https://lienFirmware2", actualResponse.location());
-    var responseFromTheChargepoint = new UpdateFirmwareResponse16();
+    var actualResponse = (UpdateFirmware) sentMessage.orElseThrow();
+    assertEquals(UpdateFirmware.class, actualResponse.getClass());
+    assertEquals("https://lienFirmware2", actualResponse.getLocation().toASCIIString());
+    var responseFromTheChargepoint = new UpdateFirmwareResponse();
     var response = new WebSocketResponseMessage(
         MessageType.RESPONSE.getCallType(),
         chargepointManager.getCurrentId(),
@@ -188,53 +214,64 @@ public class ChargepointManagerTest {
     sentMessage = chargepointManager.processMessage(response);
     assertThrows(NoSuchElementException.class, sentMessage::orElseThrow);
     var statusFromTheChargepoint =
-        new FirmwareStatusNotificationRequest16(FirmwareStatus.Installed);
+        new FirmwareStatusNotificationBuilder().withStatus(INSTALLED).build();
     request = new WebSocketRequestMessage(
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(statusFromTheChargepoint),
         JsonParser.objectToJsonString(statusFromTheChargepoint));
     sentMessage = chargepointManager.processMessage(request);
-    var reset = (ResetRequest16) sentMessage.orElseThrow();
-    assertEquals(ResetRequest16.class, sentMessage.orElseThrow().getClass());
-    assertEquals(ResetType.Hard, reset.type());
-    bootNotifMessage = new BootNotificationRequest16(
-        "Alfen BV", "Borne to be alive", "ACE0000005", "Leroy Jenkins", "5.8.1-4123");
+    var reset = (Reset) sentMessage.orElseThrow();
+    assertEquals(Reset.class, sentMessage.orElseThrow().getClass());
+    assertEquals(Reset.Type.HARD, reset.getType());
+    bootNotifMessage = new BootNotificationBuilder()
+        .withChargePointVendor("Alfen BV")
+        .withChargePointModel("Borne to be alive")
+        .withChargePointSerialNumber("ACE0000005")
+        .withChargeBoxSerialNumber("Leroy Jenkins")
+        .withFirmwareVersion("5.8.1-4123")
+        .build();
     request = new WebSocketRequestMessage(
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(bootNotifMessage),
         JsonParser.objectToJsonString(bootNotifMessage));
     sentMessage = chargepointManager.processMessage(request);
-    actualResponse = (UpdateFirmwareRequest16) sentMessage.orElseThrow();
-    assertEquals(UpdateFirmwareRequest16.class, actualResponse.getClass());
-    assertEquals("https://lienFirmware1", actualResponse.location());
-    responseFromTheChargepoint = new UpdateFirmwareResponse16();
+    actualResponse = (UpdateFirmware) sentMessage.orElseThrow();
+    assertEquals(UpdateFirmware.class, actualResponse.getClass());
+    assertEquals("https://lienFirmware1", actualResponse.getLocation().toASCIIString());
+    responseFromTheChargepoint = new UpdateFirmwareResponse();
     response = new WebSocketResponseMessage(
         MessageType.RESPONSE.getCallType(),
         chargepointManager.getCurrentId(),
         JsonParser.objectToJsonString(responseFromTheChargepoint));
     sentMessage = chargepointManager.processMessage(response);
     assertThrows(NoSuchElementException.class, sentMessage::orElseThrow);
-    statusFromTheChargepoint = new FirmwareStatusNotificationRequest16(FirmwareStatus.Installed);
+    statusFromTheChargepoint =
+        new FirmwareStatusNotificationBuilder().withStatus(INSTALLED).build();
     request = new WebSocketRequestMessage(
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(statusFromTheChargepoint),
         JsonParser.objectToJsonString(statusFromTheChargepoint));
     sentMessage = chargepointManager.processMessage(request);
-    reset = (ResetRequest16) sentMessage.orElseThrow();
-    assertEquals(ResetRequest16.class, sentMessage.orElseThrow().getClass());
-    assertEquals(ResetType.Hard, reset.type());
-    bootNotifMessage = new BootNotificationRequest16(
-        "Alfen BV", "Borne to be alive", "ACE0000005", "Leroy Jenkins", "6.1.1-4160");
+    reset = (Reset) sentMessage.orElseThrow();
+    assertEquals(Reset.class, sentMessage.orElseThrow().getClass());
+    assertEquals(Reset.Type.HARD, reset.getType());
+    bootNotifMessage = new BootNotificationBuilder()
+        .withChargePointVendor("Alfen BV")
+        .withChargePointModel("Borne to be alive")
+        .withChargePointSerialNumber("ACE0000005")
+        .withChargeBoxSerialNumber("Leroy Jenkins")
+        .withFirmwareVersion("6.1.1-4160")
+        .build();
     request = new WebSocketRequestMessage(
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(bootNotifMessage),
         JsonParser.objectToJsonString(bootNotifMessage));
     sentMessage = chargepointManager.processMessage(request);
-    assertEquals(ChangeConfigurationRequest16.class, sentMessage.orElseThrow().getClass());
+    assertEquals(ChangeConfiguration.class, sentMessage.orElseThrow().getClass());
     assertEquals(
         Chargepoint.Step.CONFIGURATION,
         chargepointManager.getCurrentChargepoint().getStep());
@@ -244,85 +281,90 @@ public class ChargepointManagerTest {
   }
 
   /**
-   * Should send {@link ChangeConfigurationRequest16}
+   * Should send {@link ChangeConfiguration}
    * until the configuration is done.
    */
   @Test
   public void onMessageShouldSendAChangeConfigurationRequestUntilIsDone() throws IOException {
     var chargepointManager = instantiate();
-    var bootNotifMessage = new BootNotificationRequest16(
-        "Alfen BV", "Borne to be alive", "ACE0000002", "Leroy Jenkins", "5.5.5-5555");
+    var bootNotifMessage = new BootNotificationBuilder()
+        .withChargePointVendor("Alfen BV")
+        .withChargePointModel("Borne to be alive")
+        .withChargePointSerialNumber("ACE0000002")
+        .withChargeBoxSerialNumber("Leroy Jenkins")
+        .withFirmwareVersion("5.5.5-5555")
+        .build();
     var request = new WebSocketRequestMessage(
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(bootNotifMessage),
         JsonParser.objectToJsonString(bootNotifMessage));
     var sentMessage = chargepointManager.processMessage(request);
-    assertEquals(ChangeConfigurationRequest16.class, sentMessage.orElseThrow().getClass());
-    var actualResponse = (ChangeConfigurationRequest16) sentMessage.orElseThrow();
+    assertEquals(ChangeConfiguration.class, sentMessage.orElseThrow().getClass());
+    var actualResponse = (ChangeConfiguration) sentMessage.orElseThrow();
     assertEquals(
         ConfigurationTranscriptor.LIGHT_INTENSITY
             .getOcpp16Key()
-            .getFirmwareKeyAccordingToVersion(bootNotifMessage.firmwareVersion()),
-        actualResponse.key());
-    assertEquals("100", actualResponse.value());
+            .getFirmwareKeyAccordingToVersion(bootNotifMessage.getFirmwareVersion()),
+        actualResponse.getKey());
+    assertEquals("100", actualResponse.getValue());
     var responseFromTheChargepoint =
-        new ChangeConfigurationResponse16(ConfigurationStatus.Accepted);
+        new ChangeConfigurationResponseBuilder().withStatus(ACCEPTED).build();
     var response = new WebSocketResponseMessage(
         MessageType.RESPONSE.getCallType(),
         chargepointManager.getCurrentId(),
         JsonParser.objectToJsonString(responseFromTheChargepoint));
     sentMessage = chargepointManager.processMessage(response);
-    assertEquals(ChangeConfigurationRequest16.class, sentMessage.orElseThrow().getClass());
-    actualResponse = (ChangeConfigurationRequest16) sentMessage.orElseThrow();
+    assertEquals(ChangeConfiguration.class, sentMessage.orElseThrow().getClass());
+    actualResponse = (ChangeConfiguration) sentMessage.orElseThrow();
     assertEquals(
         ConfigurationTranscriptor.CHARGEPOINT_IDENTITY
             .getOcpp16Key()
-            .getFirmwareKeyAccordingToVersion(bootNotifMessage.firmwareVersion()),
-        actualResponse.key());
-    assertEquals("Borne-Test", actualResponse.value());
+            .getFirmwareKeyAccordingToVersion(bootNotifMessage.getFirmwareVersion()),
+        actualResponse.getKey());
+    assertEquals("Borne-Test", actualResponse.getValue());
     sentMessage = chargepointManager.processMessage(response);
-    assertEquals(ChangeConfigurationRequest16.class, sentMessage.orElseThrow().getClass());
-    actualResponse = (ChangeConfigurationRequest16) sentMessage.orElseThrow();
+    assertEquals(ChangeConfiguration.class, sentMessage.orElseThrow().getClass());
+    actualResponse = (ChangeConfiguration) sentMessage.orElseThrow();
     assertEquals(
         ConfigurationTranscriptor.LOCAL_AUTH_LIST
             .getOcpp16Key()
-            .getFirmwareKeyAccordingToVersion(bootNotifMessage.firmwareVersion()),
-        actualResponse.key());
-    assertEquals("true", actualResponse.value());
+            .getFirmwareKeyAccordingToVersion(bootNotifMessage.getFirmwareVersion()),
+        actualResponse.getKey());
+    assertEquals("true", actualResponse.getValue());
     sentMessage = chargepointManager.processMessage(response);
-    assertEquals(ChangeConfigurationRequest16.class, sentMessage.orElseThrow().getClass());
-    actualResponse = (ChangeConfigurationRequest16) sentMessage.orElseThrow();
+    assertEquals(ChangeConfiguration.class, sentMessage.orElseThrow().getClass());
+    actualResponse = (ChangeConfiguration) sentMessage.orElseThrow();
     assertEquals(
         ConfigurationTranscriptor.STATION_MAX_CURRENT
             .getOcpp16Key()
-            .getFirmwareKeyAccordingToVersion(bootNotifMessage.firmwareVersion()),
-        actualResponse.key());
-    assertEquals("20", actualResponse.value());
+            .getFirmwareKeyAccordingToVersion(bootNotifMessage.getFirmwareVersion()),
+        actualResponse.getKey());
+    assertEquals("20", actualResponse.getValue());
     sentMessage = chargepointManager.processMessage(response);
-    assertEquals(ChangeConfigurationRequest16.class, sentMessage.orElseThrow().getClass());
-    actualResponse = (ChangeConfigurationRequest16) sentMessage.orElseThrow();
+    assertEquals(ChangeConfiguration.class, sentMessage.orElseThrow().getClass());
+    actualResponse = (ChangeConfiguration) sentMessage.orElseThrow();
     assertEquals(
         ConfigurationTranscriptor.CHARGEPOINT_IDENTITY
             .getOcpp16Key()
-            .getFirmwareKeyAccordingToVersion(bootNotifMessage.firmwareVersion()),
-        actualResponse.key());
-    assertEquals("dépasse les bornes", actualResponse.value());
+            .getFirmwareKeyAccordingToVersion(bootNotifMessage.getFirmwareVersion()),
+        actualResponse.getKey());
+    assertEquals("dépasse les bornes", actualResponse.getValue());
     if (System.getenv("FINAL_WS_SERVER_ADDRESS") != null) {
       sentMessage = chargepointManager.processMessage(response);
-      assertEquals(ChangeConfigurationRequest16.class, sentMessage.orElseThrow().getClass());
-      actualResponse = (ChangeConfigurationRequest16) sentMessage.orElseThrow();
+      assertEquals(ChangeConfiguration.class, sentMessage.orElseThrow().getClass());
+      actualResponse = (ChangeConfiguration) sentMessage.orElseThrow();
       assertEquals(
           ConfigurationTranscriptor.NETWORK_PROFILE
               .getOcpp16Key()
-              .getFirmwareKeyAccordingToVersion(bootNotifMessage.firmwareVersion()),
-          actualResponse.key());
-      assertEquals(System.getenv("FINAL_WS_SERVER_ADDRESS"), actualResponse.value());
+              .getFirmwareKeyAccordingToVersion(bootNotifMessage.getFirmwareVersion()),
+          actualResponse.getKey());
+      assertEquals(System.getenv("FINAL_WS_SERVER_ADDRESS"), actualResponse.getValue());
     }
     sentMessage = chargepointManager.processMessage(response);
-    assertEquals(ResetRequest16.class, sentMessage.orElseThrow().getClass());
-    var resetRequest = (ResetRequest16) sentMessage.orElseThrow();
-    assertEquals(ResetType.Hard, resetRequest.type());
+    assertEquals(Reset.class, sentMessage.orElseThrow().getClass());
+    var resetRequest = (Reset) sentMessage.orElseThrow();
+    assertEquals(Reset.Type.HARD, resetRequest.getType());
     sentMessage = chargepointManager.processMessage(response);
     var finalSentMessage = sentMessage;
     assertThrows(NoSuchElementException.class, finalSentMessage::orElseThrow);

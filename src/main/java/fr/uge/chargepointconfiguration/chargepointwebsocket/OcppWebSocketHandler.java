@@ -9,6 +9,7 @@ import fr.uge.chargepointconfiguration.logs.CustomLogger;
 import fr.uge.chargepointconfiguration.logs.sealed.TechnicalLog;
 import fr.uge.chargepointconfiguration.logs.sealed.TechnicalLogEntity;
 import fr.uge.chargepointconfiguration.tools.JsonParser;
+import jakarta.validation.Validator;
 import java.io.EOFException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
@@ -22,14 +23,17 @@ public class OcppWebSocketHandler extends TextWebSocketHandler {
   private final HashMap<InetSocketAddress, ChargePointManager> chargePoints = new HashMap<>();
   private final ChargepointRepository chargepointRepository;
   private final FirmwareRepository firmwareRepository;
+  private final Validator validator;
   private final CustomLogger logger;
 
   public OcppWebSocketHandler(
       ChargepointRepository chargepointRepository,
       FirmwareRepository firmwareRepository,
+      Validator validator,
       CustomLogger logger) {
     this.chargepointRepository = Objects.requireNonNull(chargepointRepository);
     this.firmwareRepository = Objects.requireNonNull(firmwareRepository);
+    this.validator = validator;
     this.logger = Objects.requireNonNull(logger);
   }
 
@@ -65,6 +69,13 @@ public class OcppWebSocketHandler extends TextWebSocketHandler {
       logger.info(new TechnicalLog(
           TechnicalLogEntity.Component.BACKEND,
           "received response from " + remote + ": " + message.getPayload()));
+    }
+    var violations = validator.validate(webSocketMessage.get());
+    if (!violations.isEmpty()) {
+      logger.warn(new TechnicalLog(
+          TechnicalLogEntity.Component.BACKEND,
+          "message from " + remote + " is invalid: " + violations));
+      return;
     }
     chargePoints.get(remote).processMessage(webSocketMessage.get());
   }
@@ -110,6 +121,12 @@ public class OcppWebSocketHandler extends TextWebSocketHandler {
     return new ChargePointManager(
         ocppVersion,
         (ocppMessage, chargePointManager) -> {
+          var violations = validator.validate(ocppMessage);
+          if (!violations.isEmpty()) {
+            logger.warn(new TechnicalLog(
+                TechnicalLogEntity.Component.BACKEND, "message is invalid: " + violations));
+            return;
+          }
           switch (OcppMessage.ocppMessageToMessageType(ocppMessage)) {
             case REQUEST -> {
               var request = new WebSocketRequestMessage(

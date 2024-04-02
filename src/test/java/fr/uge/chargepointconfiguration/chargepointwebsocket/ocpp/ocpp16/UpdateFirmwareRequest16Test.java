@@ -2,59 +2,61 @@ package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.UpdateFirmware.UpdateFirmwareBuilder;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Instant;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-/**
- * JUnit test class for the {@link UpdateFirmwareRequest16}.
- */
-class UpdateFirmwareRequest16Test {
+class UpdateFirmwareRequest16Test extends OcppBaseTest {
 
-  /**
-   * Should not throw an exception when instantiating the record.
-   */
+  @DisplayName("Should not throw an exception when instantiating the message")
   @Test
   public void correctConstructorShouldNotThrowException() {
     assertDoesNotThrow(() -> {
-      new UpdateFirmwareRequest16("location", Instant.now());
+      new UpdateFirmwareBuilder()
+          .withLocation(new URI("location"))
+          .withRetrieveDate(Instant.now())
+          .build();
     });
   }
 
-  /**
-   * Should return the correct location.
-   */
+  @DisplayName("Should return the correct location")
   @Test
-  public void returnsCorrectLocation() {
-    var test = new UpdateFirmwareRequest16("location", Instant.now());
-    assertEquals("location", test.location());
+  public void returnsCorrectLocation() throws URISyntaxException {
+    var test = new UpdateFirmwareBuilder()
+        .withLocation(new URI("location"))
+        .withRetrieveDate(Instant.now())
+        .build();
+    assertIsValid(test);
+    assertEquals("location", test.getLocation().toASCIIString());
   }
 
-  /**
-   * Should return the correct retrieve date.
-   */
+  @DisplayName("Should return the correct retrieve date")
   @Test
-  public void returnsCorrectRetrieveDate() {
+  public void returnsCorrectRetrieveDate() throws URISyntaxException {
     var date = Instant.now();
-    var test = new UpdateFirmwareRequest16("location", date);
-    assertEquals(date, test.retrieveDate());
+    var test = new UpdateFirmwareBuilder()
+        .withLocation(new URI("location"))
+        .withRetrieveDate(date)
+        .build();
+    assertIsValid(test);
+    assertEquals(date, test.getRetrieveDate());
   }
 
-  /**
-   * Should throw a {@link NullPointerException} if the location is null.
-   */
+  @DisplayName("Should report a violation if the location is null")
   @Test
-  public void throwsExceptionIfLocationIsNull() {
-    assertThrows(
-        NullPointerException.class, () -> new UpdateFirmwareRequest16(null, Instant.now()));
+  public void invalidBeanIfLocationIsNull() {
+    var test = new UpdateFirmwareBuilder().withRetrieveDate(Instant.now()).build();
+    assertSingleViolation(test, "location");
   }
 
-  /**
-   * Should throw a {@link NullPointerException} if the retrieve date is null.
-   */
+  @DisplayName("Should report a violation if the retrieve date is null")
   @Test
-  public void throwsExceptionIfRetrieveDateIsNull() {
-    assertThrows(NullPointerException.class, () -> new UpdateFirmwareRequest16("location", null));
+  public void invalidBeanIfRetrieveDateIsNull() throws URISyntaxException {
+    var test = new UpdateFirmwareBuilder().withLocation(new URI("location")).build();
+    assertSingleViolation(test, "retrieveDate");
   }
 }

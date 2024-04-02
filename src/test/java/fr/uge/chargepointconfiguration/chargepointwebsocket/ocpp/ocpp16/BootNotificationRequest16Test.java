@@ -3,280 +3,258 @@ package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.BootNotification;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-/**
- * JUnit test class for the {@link BootNotificationRequest16}.
- */
-class BootNotificationRequest16Test {
+class BootNotificationRequest16Test extends OcppBaseTest {
 
-  /**
-   * Should not throw an exception when instantiating the record.
-   */
+  @DisplayName("Should not throw an exception when instantiating the message")
   @Test
   public void correctConstructorShouldNotThrowException() {
     assertDoesNotThrow(() -> {
-      new BootNotificationRequest16(
-          "chargePointVendor",
-          "chargePointModel",
-          "chargePointSerialNumber",
-          "chargeBoxSerialNumber",
-          "firmwareVersion");
+      new BootNotification.BootNotificationBuilder()
+          .withChargePointVendor("chargePointVendor")
+          .withChargePointModel("chargePointModel")
+          .withChargePointSerialNumber("chargePointSerialNumber")
+          .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+          .withFirmwareVersion("firmwareVersion")
+          .build();
     });
   }
 
-  /**
-   * Should return the correct charge point vendor.
-   */
+  @DisplayName("Should return the correct charge point vendor")
   @Test
-  public void returnsCorrectChargepointVendor() {
-    var test = new BootNotificationRequest16(
-        "chargePointVendor",
-        "chargePointModel",
-        "chargePointSerialNumber",
-        "chargeBoxSerialNumber",
-        "firmwareVersion");
-    assertEquals("chargePointVendor", test.chargePointVendor());
+  public void returnsCorrectChargePointVendor() {
+    var test = new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointModel("chargePointModel")
+        .withChargePointSerialNumber("chargePointSerialNumber")
+        .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+        .withFirmwareVersion("firmwareVersion")
+        .build();
+    assertIsValid(test);
+    assertEquals("chargePointVendor", test.getChargePointVendor());
   }
 
-  /**
-   * Should return the correct charge point model.
-   */
+  @DisplayName("Should return the correct charge point model")
   @Test
-  public void returnsCorrectChargepointModel() {
-    var test = new BootNotificationRequest16(
-        "chargePointVendor",
-        "chargePointModel",
-        "chargePointSerialNumber",
-        "chargeBoxSerialNumber",
-        "firmwareVersion");
-    assertEquals("chargePointModel", test.chargePointModel());
+  public void returnsCorrectChargePointModel() {
+    var test = new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointModel("chargePointModel")
+        .withChargePointSerialNumber("chargePointSerialNumber")
+        .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+        .withFirmwareVersion("firmwareVersion")
+        .build();
+    assertIsValid(test);
+    assertEquals("chargePointModel", test.getChargePointModel());
   }
 
-  /**
-   * Should return the correct charge point serial number.
-   */
+  @DisplayName("Should return the correct charge point serial number")
   @Test
-  public void returnsCorrectChargepointSerialNumber() {
-    var test = new BootNotificationRequest16(
-        "chargePointVendor",
-        "chargePointModel",
-        "chargePointSerialNumber",
-        "chargeBoxSerialNumber",
-        "firmwareVersion");
-    assertEquals("chargePointSerialNumber", test.chargePointSerialNumber());
+  public void returnsCorrectChargePointSerialNumber() {
+    var test = new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointModel("chargePointModel")
+        .withChargePointSerialNumber("chargePointSerialNumber")
+        .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+        .withFirmwareVersion("firmwareVersion")
+        .build();
+    assertIsValid(test);
+    assertEquals("chargePointSerialNumber", test.getChargePointSerialNumber());
   }
 
-  /**
-   * Should return the correct charge point serial number even if it is null.
-   */
+  @DisplayName("Should return the correct charge point serial number even if it is null")
   @Test
-  public void returnsCorrectChargepointSerialNumberEvenIfNull() {
-    var test = new BootNotificationRequest16(
-        "chargePointVendor", "chargePointModel", null, "chargeBoxSerialNumber", "firmwareVersion");
-    assertNull(test.chargePointSerialNumber());
+  public void returnsCorrectChargePointSerialNumberEvenIfNull() {
+    var test = new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointModel("chargePointModel")
+        .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+        .withFirmwareVersion("firmwareVersion")
+        .build();
+    assertIsValid(test);
+    assertNull(test.getChargePointSerialNumber());
   }
 
-  /**
-   * Should return the correct charge point box serial number.
-   */
+  @DisplayName("Should return the correct charge point box serial number")
   @Test
-  public void returnsCorrectChargepointBoxSerialNumber() {
-    var test = new BootNotificationRequest16(
-        "chargePointVendor",
-        "chargePointModel",
-        "chargePointSerialNumber",
-        "chargeBoxSerialNumber",
-        "firmwareVersion");
-    assertEquals("chargeBoxSerialNumber", test.chargeBoxSerialNumber());
+  public void returnsCorrectChargePointBoxSerialNumber() {
+    var test = new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointModel("chargePointModel")
+        .withChargePointSerialNumber("chargePointSerialNumber")
+        .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+        .withFirmwareVersion("firmwareVersion")
+        .build();
+    assertIsValid(test);
+    assertEquals("chargeBoxSerialNumber", test.getChargeBoxSerialNumber());
   }
 
-  /**
-   * Should return the correct charge point box serial number even if it is null.
-   */
+  @DisplayName("Should return the correct charge point box serial number even if it is null")
   @Test
-  public void returnsCorrectChargepointBoxSerialNumberEvenIfNull() {
-    var test = new BootNotificationRequest16(
-        "chargePointVendor",
-        "chargePointModel",
-        "chargePointSerialNumber",
-        null,
-        "firmwareVersion");
-    assertNull(test.chargeBoxSerialNumber());
+  public void returnsCorrectChargePointBoxSerialNumberEvenIfNull() {
+    var test = new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointModel("chargePointModel")
+        .withChargePointSerialNumber("chargePointSerialNumber")
+        .withFirmwareVersion("firmwareVersion")
+        .build();
+    assertIsValid(test);
+    assertNull(test.getChargeBoxSerialNumber());
   }
 
-  /**
-   * Should return the correct firmware version.
-   */
+  @DisplayName("Should return the correct charge point firmware version")
   @Test
-  public void returnsCorrectChargepointFirmwareVersion() {
-    var test = new BootNotificationRequest16(
-        "chargePointVendor",
-        "chargePointModel",
-        "chargePointSerialNumber",
-        "chargeBoxSerialNumber",
-        "firmwareVersion");
-    assertEquals("firmwareVersion", test.firmwareVersion());
+  public void returnsCorrectChargePointFirmwareVersion() {
+    var test = new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointModel("chargePointModel")
+        .withChargePointSerialNumber("chargePointSerialNumber")
+        .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+        .withFirmwareVersion("firmwareVersion")
+        .build();
+    assertIsValid(test);
+    assertEquals("firmwareVersion", test.getFirmwareVersion());
   }
 
-  /**
-   * Should return the correct firmware version even if it is null.
-   */
+  @DisplayName("Should return the correct charge point firmware version even if it is null")
   @Test
-  public void returnsCorrectChargepointFirmwareVersionEvenIfNull() {
-    var test = new BootNotificationRequest16(
-        "chargePointVendor",
-        "chargePointModel",
-        "chargePointSerialNumber",
-        "chargeBoxSerialNumber",
-        null);
-    assertNull(test.firmwareVersion());
+  public void returnsCorrectChargePointFirmwareVersionEvenIfNull() {
+    var test = new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointModel("chargePointModel")
+        .withChargePointSerialNumber("chargePointSerialNumber")
+        .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+        .build();
+    assertIsValid(test);
+    assertNull(test.getFirmwareVersion());
   }
 
-  /**
-   * Should throw an {@link NullPointerException} if the charge point vendor is null.
-   */
+  @DisplayName("Should report a violation if the charge point vendor is null")
   @Test
-  public void throwsExceptionIfVendorIsNull() {
-    assertThrows(
-        NullPointerException.class,
-        () -> new BootNotificationRequest16(
-            null,
-            "chargePointModel",
-            "chargePointSerialNumber",
-            "chargeBoxSerialNumber",
-            "firmwareVersion"));
+  public void invalidBeanIfVendorIsNull() {
+    var test = new BootNotification.BootNotificationBuilder()
+        .withChargePointModel("chargePointModel")
+        .withChargePointSerialNumber("chargePointSerialNumber")
+        .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+        .withFirmwareVersion("firmwareVersion")
+        .build();
+    assertSingleViolation(test, "chargePointVendor");
   }
 
-  /**
-   * Should throw an {@link NullPointerException} if the charge point model is null.
-   */
+  @DisplayName("Should report a violation if the charge point model is null")
   @Test
-  public void throwsExceptionIfModelIsNull() {
-    assertThrows(
-        NullPointerException.class,
-        () -> new BootNotificationRequest16(
-            "chargePointVendor",
-            null,
-            "chargePointSerialNumber",
-            "chargeBoxSerialNumber",
-            "firmwareVersion"));
+  public void invalidBeanIfModelIsNull() {
+    var test = new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointSerialNumber("chargePointSerialNumber")
+        .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+        .withFirmwareVersion("firmwareVersion")
+        .build();
+    assertSingleViolation(test, "chargePointModel");
   }
 
-  /**
-   * Should not throw an exception if the charge point serial number is null.
-   */
+  @DisplayName("Should not throw an exception if the charge point serial number is null")
   @Test
   public void doesNotThrowExceptionIfSerialNumberIsNull() {
-    assertDoesNotThrow(() -> new BootNotificationRequest16(
-        "chargePointVendor", "chargePointModel", null, "chargeBoxSerialNumber", "firmwareVersion"));
+    assertDoesNotThrow(() -> new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointModel("chargePointModel")
+        .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+        .withFirmwareVersion("firmwareVersion")
+        .build());
   }
 
-  /**
-   * Should not throw an exception if the charge point box serial number is null.
-   */
+  @DisplayName("Should not throw an exception if the charge point box serial number is null")
   @Test
   public void doesNotThrowExceptionIfBoxSerialNumberIsNull() {
-    assertDoesNotThrow(() -> new BootNotificationRequest16(
-        "chargePointVendor",
-        "chargePointModel",
-        "chargePointSerialNumber",
-        null,
-        "firmwareVersion"));
+    assertDoesNotThrow(() -> new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointModel("chargePointModel")
+        .withChargePointSerialNumber("chargePointSerialNumber")
+        .withFirmwareVersion("firmwareVersion")
+        .build());
   }
 
-  /**
-   * Should not throw an exception if the charge point firmware version is null.
-   */
+  @DisplayName("Should not throw an exception if the charge point firmware version is null")
   @Test
   public void doesNotThrowExceptionIfFirmwareVersionIsNull() {
-    assertDoesNotThrow(() -> new BootNotificationRequest16(
-        "chargePointVendor",
-        "chargePointModel",
-        "chargePointSerialNumber",
-        "chargeBoxSerialNumber",
-        null));
+    assertDoesNotThrow(() -> new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointModel("chargePointModel")
+        .withChargePointSerialNumber("chargePointSerialNumber")
+        .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+        .build());
   }
 
-  /**
-   * Should throw an {@link IllegalArgumentException} if the vendor is longer
-   * than 20 characters.
-   */
+  @DisplayName("Should report a violation if the charge point vendor is longer than 20 characters")
   @Test
-  public void throwsExceptionIfVendorIsIncorrect() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> new BootNotificationRequest16(
-            "More than 20 characters here",
-            "chargePointModel",
-            "chargePointSerialNumber",
-            "chargeBoxSerialNumber",
-            "firmwareVersion"));
+  public void invalidBeanIfVendorIsIncorrect() {
+    var test = new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("More than 20 characters here")
+        .withChargePointModel("chargePointModel")
+        .withChargePointSerialNumber("chargePointSerialNumber")
+        .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+        .withFirmwareVersion("firmwareVersion")
+        .build();
+    assertSingleViolation(test, "chargePointVendor");
   }
 
-  /**
-   * Should throw an {@link IllegalArgumentException} if the model is longer
-   * than 20 characters.
-   */
+  @DisplayName("Should report a violation if the charge point model is longer than 20 characters")
   @Test
-  public void throwsExceptionIfModelIsIncorrect() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> new BootNotificationRequest16(
-            "chargePointVendor",
-            "More than 20 characters here",
-            "chargePointSerialNumber",
-            "chargeBoxSerialNumber",
-            "firmwareVersion"));
+  public void invalidBeanIfModelIsIncorrect() {
+    var test = new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointModel("More than 20 characters here")
+        .withChargePointSerialNumber("chargePointSerialNumber")
+        .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+        .withFirmwareVersion("firmwareVersion")
+        .build();
+    assertSingleViolation(test, "chargePointModel");
   }
 
-  /**
-   * Should throw an {@link IllegalArgumentException} if the serial number is longer
-   * than 20 characters.
-   */
+  @DisplayName(
+      "Should report a violation if the charge point serial number is longer than 25 characters")
   @Test
-  public void throwsExceptionIfSerialNumberIsIncorrect() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> new BootNotificationRequest16(
-            "chargePointVendor",
-            "chargePointModel",
-            "More than 25 characters here",
-            "chargeBoxSerialNumber",
-            "firmwareVersion"));
+  public void invalidBeanIfSerialNumberIsIncorrect() {
+    var test = new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointModel("chargePointModel")
+        .withChargePointSerialNumber("More than 25 characters here")
+        .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+        .withFirmwareVersion("firmwareVersion")
+        .build();
+    assertSingleViolation(test, "chargePointSerialNumber");
   }
 
-  /**
-   * Should throw an {@link IllegalArgumentException} if the box serial number is longer
-   * than 20 characters.
-   */
+  @DisplayName(
+      "Should report a violation if the charge point box serial number is longer than 25 characters")
   @Test
-  public void throwsExceptionIfBoxSerialNumberIsIncorrect() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> new BootNotificationRequest16(
-            "chargePointVendor",
-            "chargePointModel",
-            "chargePointSerialNumber",
-            "More than 25 characters here",
-            "firmwareVersion"));
+  public void invalidBeanIfBoxSerialNumberIsIncorrect() {
+    var test = new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointModel("chargePointModel")
+        .withChargePointSerialNumber("chargePointSerialNumber")
+        .withChargeBoxSerialNumber("More than 25 characters here")
+        .withFirmwareVersion("firmwareVersion")
+        .build();
+    assertSingleViolation(test, "chargeBoxSerialNumber");
   }
 
-  /**
-   * Should throw an {@link IllegalArgumentException} if the firmware version is longer
-   * than 50 characters.
-   */
+  @DisplayName(
+      "Should report a violation if the charge point firmware version is longer than 50 characters")
   @Test
-  public void throwsExceptionIfFirmwareVersionIsIncorrect() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> new BootNotificationRequest16(
-            "chargePointVendor",
-            "chargePointModel",
-            "chargePointSerialNumber",
-            "chargeBoxSerialNumber",
-            "More than 50 characters in this field, so it should not work !"));
+  public void invalidBeanIfFirmwareVersionIsIncorrect() {
+    var test = new BootNotification.BootNotificationBuilder()
+        .withChargePointVendor("chargePointVendor")
+        .withChargePointModel("chargePointModel")
+        .withChargePointSerialNumber("chargePointSerialNumber")
+        .withChargeBoxSerialNumber("chargeBoxSerialNumber")
+        .withFirmwareVersion("More than 50 characters in this field, so it should not work !")
+        .build();
+    assertSingleViolation(test, "firmwareVersion");
   }
 }

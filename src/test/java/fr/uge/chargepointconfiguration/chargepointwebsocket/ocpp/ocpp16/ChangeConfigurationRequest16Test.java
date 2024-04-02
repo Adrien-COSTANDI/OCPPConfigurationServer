@@ -2,79 +2,67 @@ package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.ChangeConfiguration.ChangeConfigurationBuilder;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-/**
- * JUnit test class for the {@link ChangeConfigurationRequest16}.
- */
-class ChangeConfigurationRequest16Test {
+class ChangeConfigurationRequest16Test extends OcppBaseTest {
 
-  /**
-   * Should not throw an exception when instantiating the record.
-   */
+  @DisplayName("Should not throw an exception when instantiating the message")
   @Test
   public void correctConstructorShouldNotThrowException() {
     assertDoesNotThrow(() -> {
-      new ChangeConfigurationRequest16("key", "value");
+      new ChangeConfigurationBuilder().withKey("key").withValue("value").build();
     });
   }
 
-  /**
-   * Should return the correct key.
-   */
+  @DisplayName("Should return the correct key")
   @Test
   public void returnsCorrectKey() {
-    var test = new ChangeConfigurationRequest16("key", "value");
-    assertEquals("key", test.key());
+    var test =
+        new ChangeConfigurationBuilder().withKey("key").withValue("value").build();
+    assertEquals("key", test.getKey());
   }
 
-  /**
-   * Should return the correct value.
-   */
+  @DisplayName("Should return the correct value")
   @Test
   public void returnsCorrectValue() {
-    var test = new ChangeConfigurationRequest16("key", "value");
-    assertEquals("value", test.value());
+    var test =
+        new ChangeConfigurationBuilder().withKey("key").withValue("value").build();
+    assertEquals("value", test.getValue());
   }
 
-  /**
-   * Should throw a {@link NullPointerException} if the key is null.
-   */
+  @DisplayName("Should report a violation if the key is null")
   @Test
-  public void throwsExceptionIfKeyIsNull() {
-    assertThrows(NullPointerException.class, () -> new ChangeConfigurationRequest16(null, "value"));
+  public void invalidBeanIfKeyIsNull() {
+    var test = new ChangeConfigurationBuilder().withValue("value").build();
+    assertSingleViolation(test, "key");
   }
 
-  /**
-   * Should throw a {@link NullPointerException} if the value is null.
-   */
+  @DisplayName("Should report a violation if the value is null")
   @Test
-  public void throwsExceptionIfValueIsNull() {
-    assertThrows(NullPointerException.class, () -> new ChangeConfigurationRequest16("key", null));
+  public void invalidBeanIfValueIsNull() {
+    var test = new ChangeConfigurationBuilder().withKey("key").build();
+    assertSingleViolation(test, "value");
   }
 
-  /**
-   * Should throw an {@link IllegalArgumentException} if the key is more than 50 characters.
-   */
+  @DisplayName("Should report a violation if the key is more than 50 characters")
   @Test
-  public void throwsExceptionIfKeyIsIncorrect() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> new ChangeConfigurationRequest16(
-            "My key is more than 50 characters, which is pretty long !", "value"));
+  public void invalidBeanIfKeyIsIncorrect() {
+    var test = new ChangeConfigurationBuilder()
+        .withKey("My key is more than 50 characters, which is pretty long !")
+        .withValue("value")
+        .build();
+    assertSingleViolation(test, "key");
   }
 
-  /**
-   * Should throw an {@link IllegalArgumentException} if the value is more than 500 characters.
-   */
+  @DisplayName("Should report a violation if the value is more than 500 characters")
   @Test
-  public void throwsExceptionIfValueIsIncorrect() {
-    assertThrows(
-        IllegalArgumentException.class,
-        () -> new ChangeConfigurationRequest16(
-            "key",
+  public void invalidBeanIfValueIsIncorrect() {
+    var test = new ChangeConfigurationBuilder()
+        .withKey("key")
+        .withValue(
             """
                     Unfortunately, the value is more than 500 characters long.
                     Furthermore, it should be not accepted as a value according to
@@ -84,6 +72,8 @@ class ChangeConfigurationRequest16Test {
                     You really do not want to have the constructor angry at you and if it is the case,
                     well, farewell and good luck my friend, because you'll need luck to survive !
                     Oh no, the constructor is here... Please have mercy, NOOOOOOOOOOOOOOOOOOOOOO
-            """));
+            """)
+        .build();
+    assertSingleViolation(test, "value");
   }
 }

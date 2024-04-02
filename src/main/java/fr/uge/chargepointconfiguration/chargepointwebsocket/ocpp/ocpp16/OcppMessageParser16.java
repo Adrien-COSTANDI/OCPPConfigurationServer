@@ -3,6 +3,11 @@ package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.WebSocketMessage;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessage;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessageParser;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.BootNotification;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.ChangeConfigurationResponse;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.FirmwareStatusNotification;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.ResetResponse;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.UpdateFirmwareResponse;
 import fr.uge.chargepointconfiguration.tools.JsonParser;
 import java.util.Objects;
 import java.util.Optional;
@@ -17,9 +22,9 @@ public class OcppMessageParser16 implements OcppMessageParser {
     Objects.requireNonNull(webSocketMessage);
     return switch (webSocketMessage.messageName()) {
       case BOOT_NOTIFICATION_REQUEST -> Optional.of(
-          JsonParser.stringToObject(BootNotificationRequest16.class, webSocketMessage.data()));
-      case STATUS_FIRMWARE_REQUEST -> Optional.of(JsonParser.stringToObject(
-          FirmwareStatusNotificationRequest16.class, webSocketMessage.data()));
+          JsonParser.stringToObject(BootNotification.class, webSocketMessage.data()));
+      case STATUS_FIRMWARE_REQUEST -> Optional.of(
+          JsonParser.stringToObject(FirmwareStatusNotification.class, webSocketMessage.data()));
       default -> Optional.empty();
     };
   }
@@ -31,11 +36,11 @@ public class OcppMessageParser16 implements OcppMessageParser {
     Objects.requireNonNull(responseMessage);
     return switch (requestMessage.messageName()) {
       case CHANGE_CONFIGURATION_REQUEST -> Optional.of(
-          JsonParser.stringToObject(ChangeConfigurationResponse16.class, responseMessage.data()));
+          JsonParser.stringToObject(ChangeConfigurationResponse.class, responseMessage.data()));
       case RESET_REQUEST -> Optional.of(
-          JsonParser.stringToObject(ResetResponse16.class, responseMessage.data()));
+          JsonParser.stringToObject(ResetResponse.class, responseMessage.data()));
       case UPDATE_FIRMWARE_REQUEST -> Optional.of(JsonParser.stringToObject(
-          UpdateFirmwareResponse16.class, "{}")); // Empty value because it is an acknowledgement
+          UpdateFirmwareResponse.class, "{}")); // Empty value because it is an acknowledgement
       default -> Optional.empty();
     };
   }
