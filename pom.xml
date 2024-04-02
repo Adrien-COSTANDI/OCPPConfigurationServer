@@ -15,7 +15,7 @@
     <description>Last Project - Les bornés</description>
     <properties>
         <java.version>21</java.version>
-        <jar.finalName>${artifactId}-${version}</jar.finalName>
+        <jar.finalName>${project.artifactId}-${project.version}</jar.finalName>
     </properties>
     <dependencies>
         <dependency>
