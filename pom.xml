@@ -109,12 +109,15 @@
                 <version>1.2.1</version>
                 <configuration>
                     <sourceDirectory>${basedir}/src/main/resources/schemas</sourceDirectory>
-                    <targetPackage>fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp</targetPackage>
+                    <targetVersion>${java.version}</targetVersion>
+                    <targetPackage>fr.uge.chargepointconfiguration.chargepointwebsocket</targetPackage>
                     <dateTimeType>java.time.Instant</dateTimeType>
                     <includeJsr303Annotations>true</includeJsr303Annotations>
                     <useJakartaValidation>true</useJakartaValidation>
                     <generateBuilders>true</generateBuilders>
                     <useInnerClassBuilders>true</useInnerClassBuilders>
+                    <useBigDecimals>true</useBigDecimals>
+                    <initializeCollections>false</initializeCollections>
                     <!-- TODO remove javaInterfaces schema extension when possible -->
                 </configuration>
                 <executions>

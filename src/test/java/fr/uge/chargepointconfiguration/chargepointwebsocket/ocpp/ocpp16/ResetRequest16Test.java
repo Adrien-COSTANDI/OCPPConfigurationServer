@@ -4,7 +4,7 @@ import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.Reset.ResetBuilder;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.Reset.ResetBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

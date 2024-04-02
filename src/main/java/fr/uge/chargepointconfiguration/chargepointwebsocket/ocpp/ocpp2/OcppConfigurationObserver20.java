@@ -1,7 +1,7 @@
 package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp2;
 
-import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.RegistrationStatusEnum.ACCEPTED;
-import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.RegistrationStatusEnum.REJECTED;
+import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.RegistrationStatusEnum.ACCEPTED;
+import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.RegistrationStatusEnum.REJECTED;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,14 +14,14 @@ import fr.uge.chargepointconfiguration.chargepointwebsocket.WebSocketRequestMess
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.MessageType;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessage;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppObserver;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.BootNotificationRequest;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.BootNotificationResponse.BootNotificationResponseBuilder;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.Component.ComponentBuilder;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.SetVariableData;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.SetVariableData.SetVariableDataBuilder;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.SetVariablesRequest.SetVariablesRequestBuilder;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.SetVariablesResponse;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.Variable.VariableBuilder;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.BootNotificationRequest;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.BootNotificationResponse.BootNotificationResponseBuilder;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.Component.ComponentBuilder;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.SetVariableData;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.SetVariableData.SetVariableDataBuilder;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.SetVariablesRequest.SetVariablesRequestBuilder;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.SetVariablesResponse;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.Variable.VariableBuilder;
 import fr.uge.chargepointconfiguration.tools.JsonParser;
 import java.io.IOException;
 import java.time.Instant;
@@ -168,7 +168,7 @@ public class OcppConfigurationObserver20 implements OcppObserver {
       // Dispatch information to users
       chargePointManager.notifyStatusUpdate();
       var setVariableData = new ArrayList<
-          fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.SetVariableData>();
+          fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.SetVariableData>();
       while (!queue.isEmpty()) {
         setVariableData.add(queue.poll());
       }

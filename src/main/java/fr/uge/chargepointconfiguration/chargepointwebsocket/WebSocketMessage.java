@@ -2,13 +2,13 @@ package fr.uge.chargepointconfiguration.chargepointwebsocket;
 
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.MessageType;
 import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.OcppMessage;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.BootNotification;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.ChangeConfiguration;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.FirmwareStatusNotification;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.Reset;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.UpdateFirmware;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.BootNotificationRequest;
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_20.SetVariablesRequest;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.BootNotification;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.ChangeConfiguration;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.FirmwareStatusNotification;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.Reset;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.UpdateFirmware;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.BootNotificationRequest;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v201.SetVariablesRequest;
 import java.util.Objects;
 import java.util.Optional;
 

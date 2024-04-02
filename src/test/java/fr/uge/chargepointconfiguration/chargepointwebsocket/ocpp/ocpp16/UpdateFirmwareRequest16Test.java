@@ -3,7 +3,7 @@ package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.UpdateFirmware.UpdateFirmwareBuilder;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.UpdateFirmware.UpdateFirmwareBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Instant;

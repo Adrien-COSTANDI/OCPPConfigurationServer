@@ -3,7 +3,7 @@ package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp16;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.ChangeConfiguration.ChangeConfigurationBuilder;
+import fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.ChangeConfiguration.ChangeConfigurationBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
