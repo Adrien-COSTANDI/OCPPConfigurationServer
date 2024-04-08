@@ -22,7 +22,7 @@
  */
 package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16;
 
-import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.FirmwareStatusNotification.Status.INSTALLED;
+import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.FirmwareStatusNotification.Status.INSTALLED;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -22,7 +22,7 @@
  */
 package fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16;
 
-import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.Reset.Type.HARD;
+import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.Reset.Type.HARD;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

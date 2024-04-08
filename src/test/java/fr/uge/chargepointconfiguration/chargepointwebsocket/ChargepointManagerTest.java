@@ -22,8 +22,8 @@
  */
 package fr.uge.chargepointconfiguration.chargepointwebsocket;
 
-import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.ChangeConfigurationResponse.Status.ACCEPTED;
-import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.ocpp_16.FirmwareStatusNotification.Status.INSTALLED;
+import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.ChangeConfigurationResponse.Status.ACCEPTED;
+import static fr.uge.chargepointconfiguration.chargepointwebsocket.ocpp.v16.FirmwareStatusNotification.Status.INSTALLED;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -60,6 +60,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class ChargepointManagerTest {
 
   private static final JsonParser jsonParser = new JsonParser();
+
+  @Autowired
+  private ApplicationEventPublisher applicationEventPublisher;
 
   @Autowired
   private Validator validator;

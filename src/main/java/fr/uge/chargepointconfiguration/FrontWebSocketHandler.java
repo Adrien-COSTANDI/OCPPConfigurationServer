@@ -36,10 +36,12 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
  * Define the handler which manage clients websocket connection.
  */
 public class FrontWebSocketHandler extends TextWebSocketHandler {
-  private static final Object lock = new Object();
-  private static final ArrayList<WebSocketSession> usersSession = new ArrayList<>();
   private static final JsonParser jsonParser = new JsonParser();
 
+  private final ReadWriteLock lock = new ReentrantReadWriteLock();
+  private final Lock writeLock = lock.writeLock();
+  private final Lock readLock = lock.readLock();
+  private final List<WebSocketSession> usersSession = new ArrayList<>();
 
   /**
    * Call after a client websocket connection.
@@ -72,10 +74,11 @@ public class FrontWebSocketHandler extends TextWebSocketHandler {
    *
    * @param notificationMessage Websocket notification message
    */
-  public static void sendMessageToUsers(Notification notificationMessage) {
-    var textMessage = new TextMessage(JsonParser.objectToJsonString(notificationMessage));
-    synchronized (lock) {
+  @EventListener
+  public void sendMessageToUsers(Notification notificationMessage) {
     var textMessage = new TextMessage(jsonParser.objectToJsonString(notificationMessage));
+    try {
+      readLock.lock();
       usersSession.forEach(webSocketSession -> {
         try {
           webSocketSession.sendMessage(textMessage);
