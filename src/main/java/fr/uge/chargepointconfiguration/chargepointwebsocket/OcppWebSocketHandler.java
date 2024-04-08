@@ -33,8 +33,8 @@ import fr.uge.chargepointconfiguration.logs.sealed.TechnicalLogEntity;
 import fr.uge.chargepointconfiguration.tools.JsonParser;
 import jakarta.validation.Validator;
 import java.io.EOFException;
-import java.net.InetSocketAddress;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -51,6 +51,7 @@ public class OcppWebSocketHandler extends TextWebSocketHandler {
   private final FirmwareRepository firmwareRepository;
   private final Validator validator;
   private final CustomLogger logger;
+  private final Map<String, ChargePointManager> chargePoints = new HashMap<>();
   private final ApplicationEventPublisher applicationEventPublisher;
 
   public OcppWebSocketHandler(
@@ -67,14 +68,14 @@ public class OcppWebSocketHandler extends TextWebSocketHandler {
   }
 
   @Override
-  public void afterConnectionEstablished(WebSocketSession session) {
+  public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    super.afterConnectionEstablished(session);
     logger.info(new TechnicalLog(
         TechnicalLogEntity.Component.BACKEND, "new connection to " + session.getRemoteAddress()));
     var ocppVersion =
         OcppVersion.parse(session.getHandshakeHeaders().getFirst("Sec-Websocket-Protocol"));
     if (ocppVersion.isPresent()) {
-      chargePoints.putIfAbsent(
-          session.getRemoteAddress(), instantiate(ocppVersion.orElseThrow(), session));
+      chargePoints.putIfAbsent(session.getId(), instantiate(ocppVersion.orElseThrow(), session));
     } else {
       logger.info(new TechnicalLog(TechnicalLogEntity.Component.BACKEND, "Unknown OCPP version !"));
     }
@@ -106,7 +107,7 @@ public class OcppWebSocketHandler extends TextWebSocketHandler {
           "message from " + remote + " is invalid: " + violations));
       return;
     }
-    chargePoints.get(remote).processMessage(webSocketMessage.get());
+    chargePoints.get(session.getId()).processMessage(webSocketMessage.get());
   }
 
   @Override
@@ -121,7 +122,7 @@ public class OcppWebSocketHandler extends TextWebSocketHandler {
     logger.error(new TechnicalLog(
         TechnicalLogEntity.Component.BACKEND,
         "an error occurred on connection " + session.getRemoteAddress() + " : " + exception));
-    var chargepoint = chargePoints.get(session.getRemoteAddress());
+    var chargepoint = chargePoints.get(session.getId());
     if (chargepoint != null) {
       chargepoint.onError(exception);
     }
@@ -138,11 +139,11 @@ public class OcppWebSocketHandler extends TextWebSocketHandler {
             + session
             + " additional info: "
             + status.getReason()));
-    var chargepoint = chargePoints.getOrDefault(session.getRemoteAddress(), null);
+    var chargepoint = chargePoints.getOrDefault(session.getId(), null);
     if (chargepoint != null) {
       chargepoint.onDisconnection();
     }
-    chargePoints.remove(session.getRemoteAddress());
+    chargePoints.remove(session.getId());
     session.close();
   }
 
