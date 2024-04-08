@@ -224,6 +224,7 @@
                     </pom>
                     <java>
                         <palantirJavaFormat>
+                            <version>2.42.0</version>
                             <style>GOOGLE</style>
                         </palantirJavaFormat>
                         <importOrder/>
