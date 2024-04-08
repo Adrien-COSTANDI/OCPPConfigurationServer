@@ -55,6 +55,7 @@ import java.util.Queue;
  * Defines the OCPP configuration message for the visitor.
  */
 public class OcppConfigurationObserver201 implements OcppObserver {
+  private static final JsonParser jsonParser = new JsonParser();
   private final OcppMessageSender sender;
   private final ChargePointManager chargePointManager;
   private final ChargepointRepository chargepointRepository;
@@ -198,7 +199,7 @@ public class OcppConfigurationObserver201 implements OcppObserver {
           MessageType.REQUEST.getCallType(),
           chargePointManager.getCurrentId(),
           WebSocketMessage.MessageTypeRequest.SET_VARIABLES_REQUEST,
-          JsonParser.objectToJsonString(setVariableRequest)));
+          jsonParser.objectToJsonString(setVariableRequest)));
     }
   }
 

@@ -47,6 +47,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class UserControllerTest {
+  private static final JsonParser jsonParser = new JsonParser();
+
   @Autowired
   private MockMvc mvc;
 
@@ -78,7 +80,7 @@ class UserControllerTest {
   void updatePassword() throws Exception {
     mvc.perform(patch("/api/user/updatePassword/1")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectToJsonString(new ChangePasswordUserDto("password", "_Azerty123_"))))
+            .content(jsonParser.objectToJsonString(new ChangePasswordUserDto("password", "_Azerty123_"))))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id", is(1)))
         .andExpect(jsonPath("$.email", is("admin@email")))
@@ -93,7 +95,7 @@ class UserControllerTest {
   void updatePasswordBadFormatPassword() throws Exception {
     mvc.perform(patch("/api/user/updatePassword/1")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectToJsonString(new ChangePasswordUserDto("password", "azerty"))))
+            .content(jsonParser.objectToJsonString(new ChangePasswordUserDto("password", "azerty"))))
         .andExpect(status().isBadRequest());
   }
 
@@ -103,7 +105,7 @@ class UserControllerTest {
     mvc.perform(patch("/api/user/updatePassword/1")
             .contentType(MediaType.APPLICATION_JSON)
             .content(
-                objectToJsonString(new ChangePasswordUserDto("WRONG_PASSWORD_HERE", "azerty"))))
+                jsonParser.objectToJsonString(new ChangePasswordUserDto("WRONG_PASSWORD_HERE", "azerty"))))
         .andExpect(status().isBadRequest());
   }
 
@@ -224,7 +226,7 @@ class UserControllerTest {
   void addUser() throws Exception {
     mvc.perform(post("/api/user/create")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectToJsonString(new CreateUserDto(
+            .content(jsonParser.objectToJsonString(new CreateUserDto(
                 "newFirstName", "newLastName", "newEmail", "password", User.Role.EDITOR))))
         .andExpect(status().isCreated())
         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -241,7 +243,7 @@ class UserControllerTest {
   void addUserEmailAlreadyExist() throws Exception {
     mvc.perform(post("/api/user/create")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(objectToJsonString(new CreateUserDto(
+            .content(jsonParser.objectToJsonString(new CreateUserDto(
                 "newFirstName", "newLastName", "admin@email", "password", User.Role.EDITOR))))
         .andExpect(status().isConflict());
   }

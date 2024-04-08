@@ -48,7 +48,7 @@ public class JsonParser {
    * @param <T>    type of the object to transform
    * @return the string formatted
    */
-  public static <T> String objectToJsonString(T object) {
+  public <T> String objectToJsonString(T object) {
     Objects.requireNonNull(object);
     try {
       return mapper.writeValueAsString(object);

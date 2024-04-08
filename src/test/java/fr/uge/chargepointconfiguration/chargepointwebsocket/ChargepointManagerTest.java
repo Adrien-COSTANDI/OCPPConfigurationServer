@@ -59,6 +59,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class ChargepointManagerTest {
 
+  private static final JsonParser jsonParser = new JsonParser();
+
   @Autowired
   private Validator validator;
 
@@ -85,7 +87,7 @@ public class ChargepointManagerTest {
                 MessageType.REQUEST.getCallType(),
                 chargePointManager.getCurrentId(),
                 WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(ocppMessage),
-                JsonParser.objectToJsonString(ocppMessage));
+                jsonParser.objectToJsonString(ocppMessage));
             chargePointManager.setPendingRequest(request);
           }
         },
@@ -174,7 +176,7 @@ public class ChargepointManagerTest {
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(bootNotifMessage),
-        JsonParser.objectToJsonString(bootNotifMessage));
+        jsonParser.objectToJsonString(bootNotifMessage));
     var sentMessage = chargepointManager.processMessage(request);
     var actualResponse = (BootNotificationResponse) sentMessage.orElseThrow();
     assertEquals(BootNotificationResponse.class, sentMessage.orElseThrow().getClass());
@@ -198,7 +200,7 @@ public class ChargepointManagerTest {
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(bootNotifMessage),
-        JsonParser.objectToJsonString(bootNotifMessage));
+        jsonParser.objectToJsonString(bootNotifMessage));
     var sentMessage = chargepointManager.processMessage(request);
     var actualResponse = (BootNotificationResponse) sentMessage.orElseThrow();
     assertEquals(BootNotificationResponse.class, sentMessage.orElseThrow().getClass());
@@ -223,7 +225,7 @@ public class ChargepointManagerTest {
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(bootNotifMessage),
-        JsonParser.objectToJsonString(bootNotifMessage));
+        jsonParser.objectToJsonString(bootNotifMessage));
     var sentMessage = chargepointManager.processMessage(request);
     var actualResponse = (UpdateFirmware) sentMessage.orElseThrow();
     assertEquals(UpdateFirmware.class, actualResponse.getClass());
@@ -232,7 +234,7 @@ public class ChargepointManagerTest {
     var response = new WebSocketResponseMessage(
         MessageType.RESPONSE.getCallType(),
         chargepointManager.getCurrentId(),
-        JsonParser.objectToJsonString(responseFromTheChargepoint));
+        jsonParser.objectToJsonString(responseFromTheChargepoint));
     sentMessage = chargepointManager.processMessage(response);
     assertThrows(NoSuchElementException.class, sentMessage::orElseThrow);
     var statusFromTheChargepoint =
@@ -241,7 +243,7 @@ public class ChargepointManagerTest {
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(statusFromTheChargepoint),
-        JsonParser.objectToJsonString(statusFromTheChargepoint));
+        jsonParser.objectToJsonString(statusFromTheChargepoint));
     sentMessage = chargepointManager.processMessage(request);
     var reset = (Reset) sentMessage.orElseThrow();
     assertEquals(Reset.class, sentMessage.orElseThrow().getClass());
@@ -257,7 +259,7 @@ public class ChargepointManagerTest {
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(bootNotifMessage),
-        JsonParser.objectToJsonString(bootNotifMessage));
+        jsonParser.objectToJsonString(bootNotifMessage));
     sentMessage = chargepointManager.processMessage(request);
     actualResponse = (UpdateFirmware) sentMessage.orElseThrow();
     assertEquals(UpdateFirmware.class, actualResponse.getClass());
@@ -266,7 +268,7 @@ public class ChargepointManagerTest {
     response = new WebSocketResponseMessage(
         MessageType.RESPONSE.getCallType(),
         chargepointManager.getCurrentId(),
-        JsonParser.objectToJsonString(responseFromTheChargepoint));
+        jsonParser.objectToJsonString(responseFromTheChargepoint));
     sentMessage = chargepointManager.processMessage(response);
     assertThrows(NoSuchElementException.class, sentMessage::orElseThrow);
     statusFromTheChargepoint =
@@ -275,7 +277,7 @@ public class ChargepointManagerTest {
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(statusFromTheChargepoint),
-        JsonParser.objectToJsonString(statusFromTheChargepoint));
+        jsonParser.objectToJsonString(statusFromTheChargepoint));
     sentMessage = chargepointManager.processMessage(request);
     reset = (Reset) sentMessage.orElseThrow();
     assertEquals(Reset.class, sentMessage.orElseThrow().getClass());
@@ -291,7 +293,7 @@ public class ChargepointManagerTest {
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(bootNotifMessage),
-        JsonParser.objectToJsonString(bootNotifMessage));
+        jsonParser.objectToJsonString(bootNotifMessage));
     sentMessage = chargepointManager.processMessage(request);
     assertEquals(ChangeConfiguration.class, sentMessage.orElseThrow().getClass());
     assertEquals(
@@ -320,7 +322,7 @@ public class ChargepointManagerTest {
         MessageType.REQUEST.getCallType(),
         chargepointManager.getCurrentId(),
         WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(bootNotifMessage),
-        JsonParser.objectToJsonString(bootNotifMessage));
+        jsonParser.objectToJsonString(bootNotifMessage));
     var sentMessage = chargepointManager.processMessage(request);
     assertEquals(ChangeConfiguration.class, sentMessage.orElseThrow().getClass());
     var actualResponse = (ChangeConfiguration) sentMessage.orElseThrow();
@@ -335,7 +337,7 @@ public class ChargepointManagerTest {
     var response = new WebSocketResponseMessage(
         MessageType.RESPONSE.getCallType(),
         chargepointManager.getCurrentId(),
-        JsonParser.objectToJsonString(responseFromTheChargepoint));
+        jsonParser.objectToJsonString(responseFromTheChargepoint));
     sentMessage = chargepointManager.processMessage(response);
     assertEquals(ChangeConfiguration.class, sentMessage.orElseThrow().getClass());
     actualResponse = (ChangeConfiguration) sentMessage.orElseThrow();

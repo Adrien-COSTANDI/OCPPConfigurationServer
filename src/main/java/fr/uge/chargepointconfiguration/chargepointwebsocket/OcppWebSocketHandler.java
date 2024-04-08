@@ -42,7 +42,8 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 public class OcppWebSocketHandler extends TextWebSocketHandler {
-  private final HashMap<InetSocketAddress, ChargePointManager> chargePoints = new HashMap<>();
+  private static final JsonParser jsonParser = new JsonParser();
+
   private final ChargepointRepository chargepointRepository;
   private final FirmwareRepository firmwareRepository;
   private final Validator validator;
@@ -155,7 +156,7 @@ public class OcppWebSocketHandler extends TextWebSocketHandler {
                   MessageType.REQUEST.getCallType(),
                   chargePointManager.getCurrentId(),
                   WebSocketMessage.MessageTypeRequest.ocppMessageToEnum(ocppMessage),
-                  JsonParser.objectToJsonString(ocppMessage));
+                  jsonParser.objectToJsonString(ocppMessage));
               chargePointManager.setPendingRequest(request);
               session.sendMessage(new TextMessage(request.toString()));
               logger.info(new TechnicalLog(
@@ -166,7 +167,7 @@ public class OcppWebSocketHandler extends TextWebSocketHandler {
               var response = new WebSocketResponseMessage(
                   MessageType.RESPONSE.getCallType(),
                   chargePointManager.getCurrentId(),
-                  JsonParser.objectToJsonString(ocppMessage));
+                  jsonParser.objectToJsonString(ocppMessage));
               session.sendMessage(new TextMessage(response.toString()));
               logger.info(new TechnicalLog(
                   TechnicalLogEntity.Component.BACKEND,
