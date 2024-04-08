@@ -22,7 +22,6 @@
  */
 package fr.uge.chargepointconfiguration.chargepointwebsocket;
 
-import fr.uge.chargepointconfiguration.FrontWebSocketHandler;
 import fr.uge.chargepointconfiguration.chargepoint.Chargepoint;
 import fr.uge.chargepointconfiguration.chargepoint.ChargepointRepository;
 import fr.uge.chargepointconfiguration.chargepoint.notification.Notification;
@@ -36,11 +35,13 @@ import fr.uge.chargepointconfiguration.logs.CustomLogger;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.context.ApplicationEventPublisher;
 
 /**
  * Manages the charge point by listening and sending messages to the charge point.
  */
 public class ChargePointManager {
+  private final ApplicationEventPublisher applicationEventPublisher;
   private final OcppMessageParser ocppMessageParser;
   private final ChargepointRepository chargepointRepository;
   private final OcppObserver ocppObserver;
@@ -56,11 +57,13 @@ public class ChargePointManager {
    * @param chargepointRepository The chargepoint's repository for database queries.
    */
   public ChargePointManager(
+      ApplicationEventPublisher applicationEventPublisher,
       OcppVersion ocppVersion,
       OcppMessageSender ocppMessageSender,
       ChargepointRepository chargepointRepository,
       FirmwareRepository firmwareRepository,
       CustomLogger logger) {
+    this.applicationEventPublisher = Objects.requireNonNull(applicationEventPublisher);
     this.ocppMessageParser = OcppMessageParser.instantiateFromVersion(ocppVersion);
     this.chargepointRepository = Objects.requireNonNull(chargepointRepository);
     this.ocppObserver = OcppObserver.instantiateFromVersion(
@@ -137,7 +140,7 @@ public class ChargePointManager {
       chargepointRepository.save(currentChargepoint);
       notifyStatusUpdate();
       var notification = Notification.notificationOnDisconnect(currentChargepoint);
-      FrontWebSocketHandler.sendMessageToUsers(notification);
+      applicationEventPublisher.publishEvent(notification);
     }
   }
 
@@ -151,7 +154,7 @@ public class ChargePointManager {
       chargepointRepository.save(currentChargepoint);
       notifyStatusUpdate();
       var notification = Notification.notificationOnError(currentChargepoint);
-      FrontWebSocketHandler.sendMessageToUsers(notification);
+      applicationEventPublisher.publishEvent(notification);
     }
   }
 
@@ -160,7 +163,7 @@ public class ChargePointManager {
    */
   public void notifyStatusUpdate() {
     var notification = Notification.notificationOnStatusChange(currentChargepoint);
-    FrontWebSocketHandler.sendMessageToUsers(notification);
+    applicationEventPublisher.publishEvent(notification);
   }
 
   /**
@@ -170,7 +173,7 @@ public class ChargePointManager {
   public void notifyProcess() {
     var notification = Notification.notificationOnFinishedProcess(currentChargepoint);
     if (notification.isPresent()) {
-      FrontWebSocketHandler.sendMessageToUsers(notification.orElseThrow());
+      applicationEventPublisher.publishEvent(notification.orElseThrow());
     }
   }
 
@@ -180,6 +183,6 @@ public class ChargePointManager {
    */
   public void notifyOnConnection() {
     var notification = Notification.notificationOnConnection(currentChargepoint);
-    FrontWebSocketHandler.sendMessageToUsers(notification);
+    applicationEventPublisher.publishEvent(notification);
   }
 }

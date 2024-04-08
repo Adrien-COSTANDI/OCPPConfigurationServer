@@ -52,6 +52,7 @@ import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationEventPublisher;
 
 /**
  * JUnit test class for the {@link ChargePointManager}.
@@ -78,6 +79,7 @@ public class ChargepointManagerTest {
 
   private ChargePointManager instantiate() {
     return new ChargePointManager(
+        applicationEventPublisher,
         OcppVersion.V1_6,
         (ocppMessage, chargePointManager) -> {
           var violations = validator.validate(ocppMessage);
@@ -106,6 +108,7 @@ public class ChargepointManagerTest {
   public void correctConstructorShouldNotThrowException() {
     assertDoesNotThrow(() -> {
       new ChargePointManager(
+          applicationEventPublisher,
           OcppVersion.V1_6,
           (ocppMessage, chargePointManager) -> {
             var violations = validator.validate(ocppMessage);

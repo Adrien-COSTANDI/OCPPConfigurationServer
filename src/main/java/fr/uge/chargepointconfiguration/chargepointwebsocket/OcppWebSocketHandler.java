@@ -36,11 +36,14 @@ import java.io.EOFException;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Objects;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+@Component
 public class OcppWebSocketHandler extends TextWebSocketHandler {
   private static final JsonParser jsonParser = new JsonParser();
 
@@ -48,12 +51,15 @@ public class OcppWebSocketHandler extends TextWebSocketHandler {
   private final FirmwareRepository firmwareRepository;
   private final Validator validator;
   private final CustomLogger logger;
+  private final ApplicationEventPublisher applicationEventPublisher;
 
   public OcppWebSocketHandler(
+      ApplicationEventPublisher applicationEventPublisher,
       ChargepointRepository chargepointRepository,
       FirmwareRepository firmwareRepository,
       Validator validator,
       CustomLogger logger) {
+    this.applicationEventPublisher = Objects.requireNonNull(applicationEventPublisher);
     this.chargepointRepository = Objects.requireNonNull(chargepointRepository);
     this.firmwareRepository = Objects.requireNonNull(firmwareRepository);
     this.validator = validator;
@@ -142,6 +148,7 @@ public class OcppWebSocketHandler extends TextWebSocketHandler {
 
   private ChargePointManager instantiate(OcppVersion ocppVersion, WebSocketSession session) {
     return new ChargePointManager(
+        applicationEventPublisher,
         ocppVersion,
         (ocppMessage, chargePointManager) -> {
           var violations = validator.validate(ocppMessage);

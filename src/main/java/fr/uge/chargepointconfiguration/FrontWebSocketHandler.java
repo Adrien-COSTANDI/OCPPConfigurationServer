@@ -26,7 +26,9 @@ import fr.uge.chargepointconfiguration.chargepoint.notification.Notification;
 import fr.uge.chargepointconfiguration.tools.JsonParser;
 import java.io.IOException;
 import java.util.ArrayList;
+import org.springframework.context.event.EventListener;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -35,6 +37,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 /**
  * Define the handler which manage clients websocket connection.
  */
+@Component
 public class FrontWebSocketHandler extends TextWebSocketHandler {
   private static final JsonParser jsonParser = new JsonParser();
 
