@@ -46,7 +46,7 @@ public interface ChargepointRepository
    * @param constructor Chargepoint's vendor.
    * @return The correct Chargepoint or null if the chargepoint couldn't be found.
    */
-  Chargepoint findBySerialNumberChargepointAndConstructor(String serialNumber, String constructor);
+  Chargepoint findBySerialNumberChargePointAndConstructor(String serialNumber, String constructor);
 
   /**
    * Return a list of registered Chargepoints from database.

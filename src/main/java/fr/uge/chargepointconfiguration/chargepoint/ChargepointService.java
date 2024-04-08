@@ -87,7 +87,7 @@ public class ChargepointService {
   }
 
   private void checkAlreadyExistingChargepoint(CreateChargepointDto createChargepointDto) {
-    var chargepoint = chargepointRepository.findBySerialNumberChargepointAndConstructor(
+    var chargepoint = chargepointRepository.findBySerialNumberChargePointAndConstructor(
         createChargepointDto.serialNumberChargepoint(), createChargepointDto.constructor());
 
     if (chargepoint != null) {
@@ -158,7 +158,7 @@ public class ChargepointService {
         .orElseThrow(() -> new EntityNotFoundException("Pas de borne avec l'id : " + id));
 
     var existingByConstructorAndSerialNumber =
-        chargepointRepository.findBySerialNumberChargepointAndConstructor(
+        chargepointRepository.findBySerialNumberChargePointAndConstructor(
             newValues.serialNumberChargepoint(), newValues.constructor());
 
     if (existingByConstructorAndSerialNumber != null

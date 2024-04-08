@@ -98,7 +98,7 @@ public class OcppConfigurationObserver201 implements OcppObserver {
 
     // Get charge point from database
     chargePointManager.setCurrentChargepoint(
-        chargepointRepository.findBySerialNumberChargepointAndConstructor(
+        chargepointRepository.findBySerialNumberChargePointAndConstructor(
             bootNotificationRequest.getChargingStation().getSerialNumber(),
             bootNotificationRequest.getChargingStation().getVendorName()));
     var currentChargepoint = chargePointManager.getCurrentChargepoint();

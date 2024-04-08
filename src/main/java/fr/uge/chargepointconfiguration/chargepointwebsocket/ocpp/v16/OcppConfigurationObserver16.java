@@ -134,7 +134,7 @@ public class OcppConfigurationObserver16 implements OcppObserver {
     firmwareVersion = bootNotificationRequest16.getFirmwareVersion();
     // Get charge point from database
     chargePointManager.setCurrentChargepoint(
-        chargepointRepository.findBySerialNumberChargepointAndConstructor(
+        chargepointRepository.findBySerialNumberChargePointAndConstructor(
             bootNotificationRequest16.getChargePointSerialNumber(),
             bootNotificationRequest16.getChargePointVendor()));
     // If charge point is not found then skip it
@@ -535,7 +535,7 @@ public class OcppConfigurationObserver16 implements OcppObserver {
       return processResetRequest();
     }
     chargePointManager.setCurrentChargepoint(
-        chargepointRepository.findBySerialNumberChargepointAndConstructor(
+        chargepointRepository.findBySerialNumberChargePointAndConstructor(
             currentChargepoint.getSerialNumberChargePoint(), currentChargepoint.getConstructor()));
     currentChargepoint = chargePointManager.getCurrentChargepoint();
     var step = currentChargepoint.getStep();
