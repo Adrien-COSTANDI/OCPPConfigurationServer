@@ -26,6 +26,10 @@ import fr.uge.chargepointconfiguration.chargepoint.notification.Notification;
 import fr.uge.chargepointconfiguration.tools.JsonParser;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.springframework.context.event.EventListener;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
@@ -54,8 +58,11 @@ public class FrontWebSocketHandler extends TextWebSocketHandler {
   @Override
   public void afterConnectionEstablished(@NonNull WebSocketSession session) {
     // Perform actions when a new WebSocket connection is established
-    synchronized (lock) {
+    try {
+      writeLock.lock();
       usersSession.add(session);
+    } finally {
+      writeLock.unlock();
     }
   }
 
@@ -67,8 +74,11 @@ public class FrontWebSocketHandler extends TextWebSocketHandler {
    * @throws Exception throw
    */
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-    synchronized (lock) {
+    try {
+      writeLock.lock();
       usersSession.remove(session);
+    } finally {
+      writeLock.unlock();
     }
   }
 
@@ -89,6 +99,8 @@ public class FrontWebSocketHandler extends TextWebSocketHandler {
           System.out.println("Failed to sent a message to the client: " + e.getMessage());
         }
       });
+    } finally {
+      readLock.unlock();
     }
   }
 }
